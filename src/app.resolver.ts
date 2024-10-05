@@ -7,6 +7,6 @@ export class AppResolver {
 
 	@Query(() => String, {})
 	async hello() {
-		throw new Error("afdsaf");
+		throw new ApiBadRequestException("Khong dung cau truc", { a: 1, b: 2 });
 	}
 }

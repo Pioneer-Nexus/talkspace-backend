@@ -17,7 +17,7 @@ type MessageType = string | string[];
 
 export class BaseException extends HttpException {
 	traceid: string;
-	stackTrace: string[];
+	stackTraceList: string[];
 	date: string;
 	readonly context: string;
 	readonly statusCode: number;
@@ -31,7 +31,7 @@ export class BaseException extends HttpException {
 	) {
 		super(message, status);
 
-		this.stackTrace = this.stack
+		this.stackTraceList = this.stack
 			.split("\n")
 			.slice(1)
 			.map((d) => d.split("at").at(1))

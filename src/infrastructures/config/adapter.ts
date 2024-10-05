@@ -1,4 +1,7 @@
 export abstract class IConfigAdapter {
+  IS_LOCAL: boolean;
+  IS_PRODUCTION: boolean;
+
   ENV: string;
 
   PORT: number | string;

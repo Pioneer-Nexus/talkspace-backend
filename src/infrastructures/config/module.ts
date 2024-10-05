@@ -22,6 +22,8 @@ import { EnvEnum } from "./types";
 				const ConfigSchema = z.object<ZodInferSchema<IConfigAdapter>>({
 					DB_CONNECTION_STRING: z.string(),
 					ENV: z.nativeEnum(EnvEnum),
+					IS_LOCAL: z.boolean(),
+					IS_PRODUCTION: z.boolean(),
 					HOST: z.string(),
 					PORT: z.number(),
 				});

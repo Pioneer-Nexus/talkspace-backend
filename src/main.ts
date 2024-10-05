@@ -1,3 +1,5 @@
+import "./infrastructures/tracing";
+
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { IConfigAdapter } from "./infrastructures/config";

@@ -9,4 +9,6 @@ export abstract class IConfigAdapter {
   HOST: string;
 
   DB_CONNECTION_STRING: string;
+
+  TRACING_URL: string;
 }

@@ -18,5 +18,7 @@ export class AppConfigService implements IConfigAdapter {
 
 	HOST = this.config.get("HOST");
 
+	TRACING_URL = this.config.get("TRACING_URL");
+
 	PORT = parseInt(this.config.get<string>("PORT"));
 }

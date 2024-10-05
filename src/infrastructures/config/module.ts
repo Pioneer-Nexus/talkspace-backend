@@ -25,6 +25,7 @@ import { EnvEnum } from "./types";
 					IS_LOCAL: z.boolean(),
 					IS_PRODUCTION: z.boolean(),
 					HOST: z.string(),
+					TRACING_URL: z.string(),
 					PORT: z.number(),
 				});
 				const configData = new AppConfigService(config);

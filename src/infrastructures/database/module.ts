@@ -1,8 +1,15 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
-import { Connection } from "mongoose";
+import mongoose, { Connection } from "mongoose";
 
 import { AppConfigModule, IConfigAdapter } from "../config";
+
+const databaseConnectionProvider = {
+	provide: "DATABASE_CONNECTION",
+	useFactory: (config: IConfigAdapter): Promise<typeof mongoose> =>
+		mongoose.connect(config.DB_CONNECTION_STRING),
+	inject: [IConfigAdapter],
+};
 
 @Module({
 	imports: [
@@ -23,6 +30,9 @@ import { AppConfigModule, IConfigAdapter } from "../config";
 			inject: [IConfigAdapter],
 			imports: [AppConfigModule],
 		}),
+		AppConfigModule,
 	],
+	providers: [databaseConnectionProvider],
+	exports: [databaseConnectionProvider],
 })
 export class AppDatabaseModule {}

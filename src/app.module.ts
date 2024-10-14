@@ -7,9 +7,16 @@ import { APP_FILTER } from "@nestjs/core";
 import { GraphQLExceptionFilter } from "./filters/GraphQLExceptionFilter";
 import { AppDatabaseModule } from "./infrastructures/database";
 import { CatModule } from "./modules/cat";
+import { AppLoggerModule } from "./infrastructures/logger";
 
 @Module({
-	imports: [AppConfigModule, AppGraphQLModule, AppDatabaseModule, CatModule],
+	imports: [
+		AppConfigModule,
+		AppGraphQLModule,
+		AppDatabaseModule,
+		AppLoggerModule,
+		CatModule,
+	],
 	controllers: [AppController],
 	providers: [
 		AppResolver,

@@ -22,11 +22,13 @@ import { EnvEnum } from "./types";
 				const ConfigSchema = z.object<ZodInferSchema<IConfigAdapter>>({
 					DB_CONNECTION_STRING: z.string(),
 					ENV: z.nativeEnum(EnvEnum),
+					HOST: z.string(),
 					IS_LOCAL: z.boolean(),
 					IS_PRODUCTION: z.boolean(),
-					HOST: z.string(),
 					TRACING_URL: z.string(),
 					PORT: z.number(),
+					ELASTICSEARCH_URL: z.string(),
+					TIME_ZONE: z.string(),
 				});
 				const configData = new AppConfigService(config);
 

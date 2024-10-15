@@ -1,31 +1,41 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable, Scope } from "@nestjs/common";
 import { WINSTON_MODULE_PROVIDER } from "nest-winston";
 import { Logger } from "winston";
 import { LogType } from "./types/log-type";
 
-@Injectable()
+@Injectable({ scope: Scope.TRANSIENT })
 export class LoggerService {
+	private context: string;
+
 	constructor(
 		@Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
 	) {}
 
-	log(message: string, meta?: any, context?: string) {
-		this.logger.log(message, { context, ...meta });
+	setContext(contextName: string) {
+		this.context = contextName;
 	}
 
-	info(message: string, meta?: any, context?: string) {
-		this.logger.info(message, { context, ...meta });
+	log(message: string, meta?: any) {
+		this.logger.log(message, { context: this.context, ...meta });
 	}
 
-	error(message: string, context?: string, meta?: Record<string, any>) {
-		this.logger.error(message, { context, type: LogType.ERROR, ...meta });
+	info(message: string, meta?: any) {
+		this.logger.info(message, { context: this.context, ...meta });
 	}
 
-	warn(message: string, meta?: any, context?: string) {
-		this.logger.warn(message, { context, ...meta });
+	error(message: string, meta?: Record<string, any>) {
+		this.logger.error(message, {
+			context: this.context,
+			type: LogType.ERROR,
+			...meta,
+		});
 	}
 
-	debug(message: string, meta?: any, context?: string) {
-		this.logger.debug(message, { context, ...meta });
+	warn(message: string, meta?: any) {
+		this.logger.warn(message, { context: this.context, ...meta });
+	}
+
+	debug(message: string, meta?: any) {
+		this.logger.debug(message, { context: this.context, ...meta });
 	}
 }

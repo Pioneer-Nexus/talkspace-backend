@@ -2,7 +2,7 @@ import { Module } from "@nestjs/common";
 import { WinstonModule } from "nest-winston";
 import * as winston from "winston";
 import { ElasticsearchTransport } from "winston-elasticsearch";
-import { AppConfigModule, AppConfigService, IConfigAdapter } from "../config";
+import { AppConfigModule, IConfigAdapter } from "../config";
 import { LoggerService } from "./service";
 
 @Module({
@@ -22,7 +22,7 @@ import { LoggerService } from "./service";
 								{
 									dateStyle: "short",
 									timeStyle: "long",
-									timeZone: "Asia/Ho_Chi_Minh",
+									timeZone: config.TIME_ZONE,
 								},
 							).format(
 								new Date(timestamp),
@@ -35,9 +35,9 @@ import { LoggerService } from "./service";
 					new ElasticsearchTransport({
 						level: "info",
 						clientOpts: {
-							node: "http://localhost:9200", // Elasticsearch endpoint
+							node: config.ELASTICSEARCH_URL,
 						},
-						indexPrefix: "app-logs",
+						index: "app-logs",
 					}),
 				],
 			}),

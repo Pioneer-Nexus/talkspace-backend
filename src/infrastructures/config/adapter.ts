@@ -1,14 +1,11 @@
 export abstract class IConfigAdapter {
-  IS_LOCAL: boolean;
-  IS_PRODUCTION: boolean;
-
-  ENV: string;
-
-  PORT: number | string;
-
-  HOST: string;
-
-  DB_CONNECTION_STRING: string;
-
-  TRACING_URL: string;
+	DB_CONNECTION_STRING: string;
+	ELASTICSEARCH_URL: string;
+	ENV: string;
+	HOST: string;
+	IS_LOCAL: boolean;
+	IS_PRODUCTION: boolean;
+	PORT: number | string;
+  TIME_ZONE: string;
+	TRACING_URL: string;
 }

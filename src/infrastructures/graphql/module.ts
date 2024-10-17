@@ -25,6 +25,7 @@ import { AppConfigModule, IConfigAdapter } from "../config";
 				formatError: (error) => {
 					return {
 						message: error.message,
+						locations: error.locations,
 						...error.extensions,
 						path: error.path,
 					};

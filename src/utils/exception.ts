@@ -34,7 +34,7 @@ export class BaseException extends HttpException {
 		this.stackTraceList = this.stack
 			.split("\n")
 			.slice(1)
-			.map((d) => d.split("at").at(1))
+			.map((d) => d.split(/\sat/).at(1))
 			.map((d) => d.trim());
 
 		if (parameters) {

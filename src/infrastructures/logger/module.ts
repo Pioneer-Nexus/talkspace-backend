@@ -1,10 +1,12 @@
 import { Module } from "@nestjs/common";
-import { WinstonModule } from "nest-winston";
+import { WINSTON_MODULE_PROVIDER, WinstonModule } from "nest-winston";
 import * as winston from "winston";
 import { ElasticsearchTransport } from "winston-elasticsearch";
 import { AppConfigModule, IConfigAdapter } from "../config";
 import { LoggerService } from "./service";
-import { CorrelationModule } from "../correlation-id";
+import { CorrelationModule, CorrelationService } from "../correlation-id";
+import { ILoggerService } from "./adapter";
+import { Logger } from "winston";
 
 @Module({
 	imports: [
@@ -45,7 +47,15 @@ import { CorrelationModule } from "../correlation-id";
 			}),
 		}),
 	],
-	providers: [LoggerService],
-	exports: [LoggerService],
+	providers: [
+		{
+			provide: ILoggerService,
+			useFactory(logger: Logger, correlationService: CorrelationService) {
+				return new LoggerService(logger, correlationService);
+			},
+			inject: [WINSTON_MODULE_PROVIDER, CorrelationService],
+		},
+	],
+	exports: [ILoggerService],
 })
 export class AppLoggerModule {}

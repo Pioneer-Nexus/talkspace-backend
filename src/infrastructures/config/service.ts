@@ -17,4 +17,5 @@ export class AppConfigService implements IConfigAdapter {
 	PORT = parseInt(this.config.get<string>("PORT"));
 	ELASTICSEARCH_URL = this.config.get<string>("ELASTICSEARCH_URL");
 	TIME_ZONE = this.config.get<string>("TIME_ZONE");
+	REDIS_URL = this.config.get<string>("REDIS_URL");
 }

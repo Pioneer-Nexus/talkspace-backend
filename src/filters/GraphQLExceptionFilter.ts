@@ -1,4 +1,4 @@
-import { LoggerService } from "@/infrastructures/logger/service";
+import { ILoggerService } from "@/infrastructures/logger";
 import { BaseException } from "@/utils/exception";
 import { Catch } from "@nestjs/common";
 import { GqlExceptionFilter } from "@nestjs/graphql";
@@ -7,7 +7,7 @@ import { GraphQLError } from "graphql";
 
 @Catch()
 export class GraphQLExceptionFilter implements GqlExceptionFilter {
-	constructor(private readonly loggerService: LoggerService) {}
+	constructor(private readonly loggerService: ILoggerService) {}
 
 	catch(exception: BaseException) {
 		const filteredException = JSON.parse(
@@ -16,7 +16,10 @@ export class GraphQLExceptionFilter implements GqlExceptionFilter {
 			),
 		);
 		this.loggerService.setContext(filteredException.name);
-		this.loggerService.error(exception.code, {filteredException, exception});
+		this.loggerService.error(exception.code, {
+			filteredException,
+			exception,
+		});
 		throw new GraphQLError(exception.message, {
 			extensions: filteredException,
 		});

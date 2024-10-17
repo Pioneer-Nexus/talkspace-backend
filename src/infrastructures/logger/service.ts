@@ -2,15 +2,18 @@ import { Inject, Injectable, Scope } from "@nestjs/common";
 import { WINSTON_MODULE_PROVIDER } from "nest-winston";
 import { Logger } from "winston";
 import { CorrelationService } from "../correlation-id";
+import { ILoggerService } from "./adapter";
 
 @Injectable({ scope: Scope.TRANSIENT })
-export class LoggerService {
+export class LoggerService extends ILoggerService {
 	private context: string;
 
 	constructor(
 		@Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
 		private readonly correlationService: CorrelationService,
-	) {}
+	) {
+		super();
+	}
 
 	setContext(contextName: string) {
 		this.context = contextName;

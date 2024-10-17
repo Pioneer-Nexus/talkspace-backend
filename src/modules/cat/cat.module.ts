@@ -6,6 +6,7 @@ import { CatsService } from "./cat.service";
 import { CatResolver } from "./cat.resolver";
 import { CatRepository } from "./cat.repository";
 import { AppLoggerModule } from "@/infrastructures/logger";
+import { AppCacheModule } from "@/infrastructures/cache";
 
 @Module({
 	providers: [
@@ -14,7 +15,7 @@ import { AppLoggerModule } from "@/infrastructures/logger";
 		CatRepository,
 		CatResolver,
 	],
-	imports: [AppDatabaseModule, AppLoggerModule],
+	imports: [AppCacheModule, AppDatabaseModule, AppLoggerModule],
 	exports: [CatRepository],
 })
 export class CatModule {}

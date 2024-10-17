@@ -12,9 +12,11 @@ import {
 	CorrelationMiddleware,
 	CorrelationModule,
 } from "./infrastructures/correlation-id";
+import { AppCacheModule } from "./infrastructures/cache";
 
 @Module({
 	imports: [
+		AppCacheModule,
 		AppConfigModule,
 		AppGraphQLModule,
 		AppDatabaseModule,

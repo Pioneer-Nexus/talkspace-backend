@@ -9,13 +9,13 @@ import { GqlContextType, GqlExecutionContext } from "@nestjs/graphql";
 import { Request } from "express";
 import { Observable, tap } from "rxjs";
 import { CorrelationService } from "../correlation-id";
-import { LoggerService } from "./service";
+import { ILoggerService } from "./adapter";
 import { LogType } from "./types/log-type";
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
 	constructor(
-		private readonly loggerService: LoggerService,
+		private readonly loggerService: ILoggerService,
 		@Inject() private readonly correlationService: CorrelationService,
 	) {}
 

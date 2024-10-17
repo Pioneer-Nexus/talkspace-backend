@@ -6,6 +6,7 @@ export abstract class IConfigAdapter {
 	IS_LOCAL: boolean;
 	IS_PRODUCTION: boolean;
 	PORT: number | string;
-  TIME_ZONE: string;
+	REDIS_URL: string;
+	TIME_ZONE: string;
 	TRACING_URL: string;
 }

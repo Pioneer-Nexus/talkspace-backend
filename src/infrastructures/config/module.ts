@@ -29,6 +29,7 @@ import { EnvEnum } from "./types";
 					PORT: z.number(),
 					ELASTICSEARCH_URL: z.string(),
 					TIME_ZONE: z.string(),
+					REDIS_URL: z.string(),
 				});
 				const configData = new AppConfigService(config);
 

@@ -4,9 +4,11 @@ import * as winston from "winston";
 import { ElasticsearchTransport } from "winston-elasticsearch";
 import { AppConfigModule, IConfigAdapter } from "../config";
 import { LoggerService } from "./service";
+import { CorrelationModule } from "../correlation-id";
 
 @Module({
 	imports: [
+		CorrelationModule,
 		WinstonModule.forRootAsync({
 			imports: [AppConfigModule],
 			inject: [IConfigAdapter],

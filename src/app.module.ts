@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { MiddlewareConsumer, Module } from "@nestjs/common";
 import { AppController } from "./app.controller";
 import { AppConfigModule } from "./infrastructures/config";
 import { AppGraphQLModule } from "./infrastructures/graphql";
@@ -8,6 +8,10 @@ import { GraphQLExceptionFilter } from "./filters/GraphQLExceptionFilter";
 import { AppDatabaseModule } from "./infrastructures/database";
 import { CatModule } from "./modules/cat";
 import { AppLoggerModule } from "./infrastructures/logger";
+import {
+	CorrelationMiddleware,
+	CorrelationModule,
+} from "./infrastructures/correlation-id";
 
 @Module({
 	imports: [
@@ -16,6 +20,7 @@ import { AppLoggerModule } from "./infrastructures/logger";
 		AppDatabaseModule,
 		AppLoggerModule,
 		CatModule,
+		CorrelationModule,
 	],
 	controllers: [AppController],
 	providers: [
@@ -26,4 +31,8 @@ import { AppLoggerModule } from "./infrastructures/logger";
 		},
 	],
 })
-export class AppModule {}
+export class AppModule {
+	configure(consumer: MiddlewareConsumer) {
+		consumer.apply(CorrelationMiddleware).forRoutes("");
+	}
+}

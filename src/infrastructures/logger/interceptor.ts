@@ -1,19 +1,23 @@
 import {
 	CallHandler,
 	ExecutionContext,
+	Inject,
 	Injectable,
 	NestInterceptor,
 } from "@nestjs/common";
 import { GqlContextType, GqlExecutionContext } from "@nestjs/graphql";
 import { Request } from "express";
 import { Observable, tap } from "rxjs";
-import { v4 as uuidv4 } from "uuid";
+import { CorrelationService } from "../correlation-id";
 import { LoggerService } from "./service";
 import { LogType } from "./types/log-type";
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
-	constructor(private readonly loggerService: LoggerService) {}
+	constructor(
+		private readonly loggerService: LoggerService,
+		@Inject() private readonly correlationService: CorrelationService,
+	) {}
 
 	intercept(
 		context: ExecutionContext,
@@ -26,7 +30,6 @@ export class LoggingInterceptor implements NestInterceptor {
 			const info = gqlContext.getInfo();
 
 			const req: Request = gqlContext.getContext().req;
-			const res = req.res;
 
 			const ip = req.socket.remoteAddress;
 			const userAgent = req.headers["user-agent"];
@@ -36,9 +39,6 @@ export class LoggingInterceptor implements NestInterceptor {
 			const body = info.fieldNodes[0]?.loc?.source?.body;
 			const message = `GraphQL - ${parentType} - ${fieldName}`;
 
-			const requestId = uuidv4();
-			res.setHeader("requestId", requestId);
-
 			const trace = {
 				body,
 				handler: gqlContext.getHandler().name,
@@ -46,7 +46,6 @@ export class LoggingInterceptor implements NestInterceptor {
 			};
 
 			this.loggerService.info(message, {
-				requestId,
 				version: "1.0.0",
 				type: LogType.REQUEST,
 				context: trace.handler,
@@ -64,7 +63,7 @@ export class LoggingInterceptor implements NestInterceptor {
 							val,
 							context,
 							trace.handler,
-							requestId,
+							this.correlationService.getCorrelationId(),
 							startDate,
 						);
 					},

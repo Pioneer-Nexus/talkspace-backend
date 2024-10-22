@@ -5,7 +5,7 @@ pipeline {
             steps {
                 git credentialsId: 'id_ed25519', url: 'git@github.com:Pioneer-Nexus/talkspace-backend.git'
                 echo '---------------- Cloning ----------------'
-                git clone 'https://github.com/Pioneer-Nexus/talkspace-backend.git'
+                git url: 'https://github.com/Pioneer-Nexus/talkspace-backend.git', branch: 'main'
             }
         }
     }

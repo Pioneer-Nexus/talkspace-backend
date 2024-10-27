@@ -36,8 +36,8 @@ export class CacheService implements Partial<ICacheService> {
 		}
 	}
 
-	async set<T>(key: string, value: T, config?: unknown): Promise<void> {
-		await this.client.set(key, value as any, config);
+	async set<T>(key: string, value: T, ttl: number): Promise<void> {
+		await this.client.set(key, value as any, { EX: ttl });
 	}
 
 	async get<T>(key: string) {

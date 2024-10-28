@@ -13,6 +13,8 @@ import {
 	CorrelationModule,
 } from "./infrastructures/correlation-id";
 import { AppCacheModule } from "./infrastructures/cache";
+import { AuthModule } from "@/core/auth";
+import { UserModule } from "@/modules/user/user.module";
 
 @Module({
 	imports: [
@@ -21,8 +23,10 @@ import { AppCacheModule } from "./infrastructures/cache";
 		AppGraphQLModule,
 		AppDatabaseModule,
 		AppLoggerModule,
+		AuthModule,
 		CatModule,
 		CorrelationModule,
+		UserModule
 	],
 	controllers: [AppController],
 	providers: [

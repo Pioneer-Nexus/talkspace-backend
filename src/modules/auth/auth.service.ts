@@ -31,6 +31,9 @@ export class AuthService {
 			{ populate: "user" },
 		);
 
+		if (!user)
+			throw new ApiUnauthorizedException("Username or password is wrong");
+
 		const isMatch = await bcrypt.compare(password, user.password);
 		if (user && isMatch) {
 			user.password = "";

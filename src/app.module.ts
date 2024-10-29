@@ -1,5 +1,4 @@
 import { MiddlewareConsumer, Module } from "@nestjs/common";
-import { AppController } from "./app.controller";
 import { AppConfigModule } from "./infrastructures/config";
 import { AppGraphQLModule } from "./infrastructures/graphql";
 import { AppResolver } from "./app.resolver";
@@ -28,7 +27,6 @@ import { UserModule } from "@/modules/user/user.module";
 		CorrelationModule,
 		UserModule,
 	],
-	controllers: [AppController],
 	providers: [
 		AppResolver,
 		{

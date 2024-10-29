@@ -11,6 +11,7 @@ import { AuthRepository } from "./auth.repository";
 import { AuthResolver } from "./auth.resolver";
 import { AuthService } from "./auth.service";
 import { LocalStrategy } from "./strategies/local.strategy";
+import { JwtStrategy } from "./strategies/jwt.strategy";
 
 @Module({
 	imports: [
@@ -32,6 +33,7 @@ import { LocalStrategy } from "./strategies/local.strategy";
 		generateMongoProvider(Auth, AuthSchema),
 		AuthRepository,
 		LocalStrategy,
+		JwtStrategy,
 		AuthResolver,
 		AuthService,
 	],

@@ -17,8 +17,14 @@ export class GraphQLExceptionFilter implements GqlExceptionFilter {
 		);
 		this.loggerService.setContext(filteredException.name);
 		this.loggerService.error(exception.code, {
-			filteredException,
-			exception,
+			filteredException: {
+				...filteredException,
+				response: "",
+			},
+			exception: {
+				...exception,
+				response: "",
+			},
 		});
 		throw new GraphQLError(exception.message, {
 			extensions: filteredException,

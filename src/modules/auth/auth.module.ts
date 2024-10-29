@@ -8,9 +8,10 @@ import { AuthRepository } from "./auth.repository";
 import { AuthResolver } from "./auth.resolver";
 import { AuthService } from "./auth.service";
 import { LocalStrategy } from "./strategies/local.strategy";
+import { AppLoggerModule } from "@/infrastructures/logger";
 
 @Module({
-	imports: [AppDatabaseModule, PassportModule, UserModule],
+	imports: [AppDatabaseModule, AppLoggerModule, PassportModule, UserModule],
 	providers: [
 		generateMongoProvider(Auth, AuthSchema),
 		AuthRepository,

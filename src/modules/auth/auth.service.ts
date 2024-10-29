@@ -6,21 +6,27 @@ import { RegisterAuthLocalInput } from "./dtos/register-auth-local-input.dto";
 import * as bcrypt from "bcrypt";
 import { UsersService } from "../user/user.service";
 import { ApiConflictException } from "@/utils/exception";
+import { ILoggerService } from "@/infrastructures/logger";
 
 @Injectable()
 export class AuthService {
 	constructor(
 		private readonly authRepository: AuthRepository,
 		private readonly userService: UsersService,
+		private readonly logger: ILoggerService,
 	) {}
 
 	async validateLocalUser(
 		username: string,
 		password: string,
 	): Promise<AuthDocument | null> {
-		const user = await this.authRepository.findOne({ username });
+		const user = await this.authRepository.findOne(
+			{ username },
+			{ populate: "user" },
+		);
 
-		if (user && user.password === password) {
+		const isMatch = await bcrypt.compare(password, user.password);
+		if (user && isMatch) {
 			user.password = "";
 			return user;
 		}

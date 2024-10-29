@@ -1,15 +1,9 @@
-import {
-	Field,
-	InputType,
-	ObjectType,
-	OmitType,
-	registerEnumType,
-} from "@nestjs/graphql";
+import { BaseDocument } from "@/core/entity/base-document";
+import { BaseEntity } from "@/core/entity/base-entity";
+import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument, Types } from "mongoose";
 import { User } from "../user/user.schema";
-import { BaseDocument } from "@/core/entity/base-document";
-import { BaseEntity } from "@/core/entity/base-entity";
 
 export type AuthDocument = HydratedDocument<Auth> & BaseDocument;
 
@@ -53,8 +47,5 @@ export class Auth extends BaseEntity {
 	@Field()
 	user: User;
 }
-
-@InputType()
-export class AuthDto extends OmitType(Auth, [], InputType) {}
 
 export const AuthSchema = SchemaFactory.createForClass(Auth);

@@ -28,6 +28,14 @@ export class Auth {
 	@Field({ nullable: true })
 	authSecret?: string;
 
+	@Prop({ nullable: true })
+	@Field({ nullable: true })
+	username?: string;
+
+	@Prop({ nullable: true })
+	@Field({ nullable: true })
+	password?: string;
+
 	@Prop()
 	@Field(() => Date, { nullable: true })
 	expiredAt?: Date;

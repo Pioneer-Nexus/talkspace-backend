@@ -7,8 +7,8 @@ export class BaseEntity {
 	_id: Types.ObjectId;
 
 	@Field()
-	createdAt: Date;
+	createdAt: string;
 
 	@Field()
-	updatedAt: Date;
+	updatedAt: string;
 }

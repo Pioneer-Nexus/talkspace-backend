@@ -1,14 +1,15 @@
 import { UseGuards } from "@nestjs/common";
 import { Query, Resolver } from "@nestjs/graphql";
-import { JwtAuthGuard } from "./modules/auth";
+import { Auth, CurrentUser, JwtAuthGuard } from "./modules/auth";
+import { AuthDto } from "./modules/auth/dtos/auth.dto";
 
 @Resolver()
 export class AppResolver {
 	constructor() {}
 
-	@Query(() => String, {})
+	@Query(() => AuthDto, {})
 	@UseGuards(JwtAuthGuard)
-	async hello() {
-		return "";
+	async hello(@CurrentUser() auth: Auth) {
+		return auth;
 	}
 }

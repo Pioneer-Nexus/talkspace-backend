@@ -13,7 +13,7 @@ import {
 	CorrelationModule,
 } from "./infrastructures/correlation-id";
 import { AppCacheModule } from "./infrastructures/cache";
-import { AuthModule } from "@/core/auth";
+import { AuthModule } from "@/modules/auth";
 import { UserModule } from "@/modules/user/user.module";
 
 @Module({
@@ -26,7 +26,7 @@ import { UserModule } from "@/modules/user/user.module";
 		AuthModule,
 		CatModule,
 		CorrelationModule,
-		UserModule
+		UserModule,
 	],
 	controllers: [AppController],
 	providers: [

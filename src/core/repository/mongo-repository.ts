@@ -23,7 +23,7 @@ export class MongoRepository<T extends Document> implements IRepository<T> {
 		await this.model.insertMany(documents, saveOptions);
 	}
 
-	async create(document: T, saveOptions?: SaveOptions): Promise<T> {
+	async create(document: Partial<T>, saveOptions?: SaveOptions): Promise<T> {
 		const createdEntity = new this.model({ ...document, _id: document.id });
 		const savedResult = await createdEntity.save(saveOptions);
 

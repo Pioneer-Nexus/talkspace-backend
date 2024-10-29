@@ -1,21 +1,30 @@
-import { Field, InputType, ObjectType, OmitType, registerEnumType } from "@nestjs/graphql";
+import {
+	Field,
+	InputType,
+	ObjectType,
+	OmitType,
+	registerEnumType,
+} from "@nestjs/graphql";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument, Types } from "mongoose";
+import { User } from "../user/user.schema";
+import { BaseDocument } from "@/core/entity/base-document";
+import { BaseEntity } from "@/core/entity/base-entity";
 
-export type AuthDocument = HydratedDocument<Auth>;
+export type AuthDocument = HydratedDocument<Auth> & BaseDocument;
 
 export enum AuthType {
-	PASSWORD = 'password',
-	GOOGLE = 'google',
+	PASSWORD = "password",
+	GOOGLE = "google",
 }
 
 registerEnumType(AuthType, {
-	name: 'AuthType',
+	name: "AuthType",
 });
 
-@Schema()
+@Schema({ timestamps: true })
 @ObjectType()
-export class Auth {
+export class Auth extends BaseEntity {
 	@Prop({ type: String, enum: AuthType })
 	@Field(() => AuthType)
 	type: AuthType;
@@ -42,7 +51,7 @@ export class Auth {
 
 	@Prop({ type: Types.ObjectId, ref: "User" })
 	@Field()
-	user: string;
+	user: User;
 }
 
 @InputType()

@@ -4,7 +4,7 @@ import { HydratedDocument } from "mongoose";
 
 export type CatDocument = HydratedDocument<Cat>;
 
-@Schema()
+@Schema({ timestamps: true })
 @ObjectType()
 export class Cat {
 	@Prop()

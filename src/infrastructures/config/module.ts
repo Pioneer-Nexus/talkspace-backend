@@ -25,6 +25,8 @@ import { EnvEnum } from "./types";
 					HOST: z.string(),
 					IS_LOCAL: z.boolean(),
 					IS_PRODUCTION: z.boolean(),
+					JWT_SECRET: z.string(),
+					JWT_EXPIRED: z.number(),
 					TRACING_URL: z.string(),
 					PORT: z.number(),
 					ELASTICSEARCH_URL: z.string(),

@@ -1,4 +1,3 @@
-import { ApiUnauthorizedException } from "@/utils/exception";
 import { Args, Mutation, Resolver } from "@nestjs/graphql";
 import { AuthService } from "./auth.service";
 import { AuthDto } from "./dtos/auth.dto";
@@ -19,14 +18,8 @@ export class AuthResolver {
 		@Args("username") username: string,
 		@Args("password") password: string,
 	) {
-		const auth = await this.authService.validateLocalUser(
-			username,
-			password,
-		);
+		const authInfo = await this.authService.loginLocal(username, password);
 
-		if (!auth)
-			throw new ApiUnauthorizedException("Username or password is wrong");
-
-		return auth;
+		return authInfo;
 	}
 }

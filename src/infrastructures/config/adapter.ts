@@ -7,6 +7,7 @@ export abstract class IConfigAdapter {
 	IS_PRODUCTION: boolean;
 	JWT_SECRET: string;
 	JWT_EXPIRED: number;
+	JWT_REFRESH_EXPIRED: number;
 	PORT: number | string;
 	REDIS_URL: string;
 	TIME_ZONE: string;

@@ -14,6 +14,7 @@ export class AppConfigService implements IConfigAdapter {
 	IS_PRODUCTION = this.config.get<EnvEnum>("ENV") === EnvEnum.PRODUCTION;
 	JWT_SECRET = this.config.get<string>("JWT_SECRET");
 	JWT_EXPIRED = parseInt(this.config.get<string>("JWT_EXPIRED"));
+	JWT_REFRESH_EXPIRED = parseInt(this.config.get<string>("JWT_REFRESH_EXPIRED"));
 	HOST = this.config.get("HOST");
 	TRACING_URL = this.config.get("TRACING_URL");
 	PORT = parseInt(this.config.get<string>("PORT"));

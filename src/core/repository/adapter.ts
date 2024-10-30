@@ -24,7 +24,7 @@ export abstract class IRepository<T> {
 	abstract findOne<TQuery = Partial<T>, TOptions = unknown>(
 		filter: TQuery,
 		options?: TOptions,
-	): Promise<T>;
+	): Promise<T | null>;
 
 	abstract remove<TQuery = Partial<T>, TOpt = unknown>(
 		filter: TQuery,

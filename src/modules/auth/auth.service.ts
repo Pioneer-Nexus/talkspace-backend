@@ -1,25 +1,30 @@
-import { Injectable } from "@nestjs/common";
-import { AuthRepository } from "./auth.repository";
-import { AuthDocument, AuthType } from "./auth.schema";
-import { CreatedAuthDto } from "./dtos/created-auth.dto";
-import { RegisterAuthLocalInput } from "./dtos/register-auth-local-input.dto";
-import * as bcrypt from "bcrypt";
-import { UsersService } from "../user/user.service";
+import { IConfigAdapter } from "@/infrastructures/config";
+import { ILoggerService } from "@/infrastructures/logger";
 import {
 	ApiConflictException,
 	ApiUnauthorizedException,
 } from "@/utils/exception";
-import { ILoggerService } from "@/infrastructures/logger";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
+import * as bcrypt from "bcrypt";
+import { UsersService } from "../user/user.service";
 import { AuthDto } from "./dtos/auth.dto";
+import { CreatedAuthDto } from "./dtos/created-auth.dto";
+import { RegisterAuthLocalInput } from "./dtos/register-auth-local-input.dto";
+import { AuthRepository } from "./repositories/auth.repository";
+import { TokenRepository } from "./repositories/token.repository";
+import { AuthDocument, AuthType } from "./schemas/auth.schema";
+import * as _ from "lodash";
 
 @Injectable()
 export class AuthService {
 	constructor(
 		private readonly authRepository: AuthRepository,
+		private readonly tokenRepository: TokenRepository,
 		private readonly userService: UsersService,
 		private readonly logger: ILoggerService,
 		private readonly jwtService: JwtService,
+		private readonly config: IConfigAdapter,
 	) {}
 
 	async validateLocalUser(
@@ -36,11 +41,66 @@ export class AuthService {
 
 		const isMatch = await bcrypt.compare(password, user.password);
 		if (user && isMatch) {
-			user.password = "";
+			delete user.password;
 			return user;
 		}
 
 		return null;
+	}
+
+	generateToken(_authData: AuthDocument): {
+		accessToken: string;
+		refreshToken: string;
+	} {
+		const authData = _.pick(_authData, [
+			"_id",
+			"__v",
+			"id",
+			"type",
+			"username",
+			"user",
+			"createdAt",
+			"updatedAt",
+		]);
+		const accessToken = this.jwtService.sign(authData, {
+			expiresIn: `${this.config.JWT_EXPIRED}s`,
+		});
+		const refreshToken = this.jwtService.sign(authData, {
+			expiresIn: `${this.config.JWT_REFRESH_EXPIRED}s`,
+		});
+
+		return { accessToken, refreshToken };
+	}
+
+	async refreshToken(refreshToken: string): Promise<AuthDto> {
+		const decoded = (await this.jwtService.verify(refreshToken, {
+			secret: this.config.JWT_SECRET,
+		})) as AuthDocument;
+		const token = this.generateToken(decoded);
+
+		const existingToken = await this.tokenRepository.findOne({
+			refreshToken,
+		});
+
+		if (!existingToken || existingToken.isRevoked) {
+			throw new BadRequestException("Refresh token is invalid");
+		}
+
+		await this.tokenRepository.updateOne(
+			{
+				refreshToken,
+			},
+			{
+				refreshToken: token.refreshToken,
+				isRevoked: false,
+				expiredAt: new Date(
+					new Date().getTime() +
+						this.config.JWT_REFRESH_EXPIRED * 1000,
+				),
+			},
+		);
+
+		return { ...decoded, ...token };
 	}
 
 	async loginLocal(username: string, password: string): Promise<AuthDto> {
@@ -49,10 +109,17 @@ export class AuthService {
 		if (!auth)
 			throw new ApiUnauthorizedException("Username or password is wrong");
 
-		return {
-			accessToken: this.jwtService.sign(auth, { expiresIn: "100d" }),
-			...auth,
-		};
+		const token = this.generateToken(auth);
+
+		await this.tokenRepository.create({
+			refreshToken: token.refreshToken,
+			isRevoked: false,
+			expiredAt: new Date(
+				new Date().getTime() + this.config.JWT_REFRESH_EXPIRED * 1000,
+			),
+		});
+
+		return { ...token, ...auth };
 	}
 
 	async registerLocal(

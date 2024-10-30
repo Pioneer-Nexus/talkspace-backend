@@ -28,4 +28,13 @@ export class AuthResolver {
 
 		return authInfo;
 	}
+
+	@Mutation(() => AuthDto, {
+		description: "Refresh token and rotate it",
+	})
+	async refreshToken(@Args("token") token: string) {
+		const authInfo = await this.authService.refreshToken(token);
+
+		return authInfo;
+	}
 }

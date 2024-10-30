@@ -3,7 +3,7 @@ import { BaseEntity } from "@/core/entity/base-entity";
 import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument, Types } from "mongoose";
-import { User } from "../user/user.schema";
+import { User } from "../../user/user.schema";
 
 export type AuthDocument = HydratedDocument<Auth> & BaseDocument;
 

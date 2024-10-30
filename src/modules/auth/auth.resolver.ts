@@ -8,13 +8,19 @@ import { RegisterAuthLocalInput } from "./dtos/register-auth-local-input.dto";
 export class AuthResolver {
 	constructor(private readonly authService: AuthService) {}
 
-	@Mutation(() => CreatedAuthDto)
-	async registerLocalUser(@Args("input") input: RegisterAuthLocalInput) {
+	@Mutation(() => CreatedAuthDto, {
+		description: "Register new user with username and password",
+	})
+	async registerUserWithCredential(
+		@Args("input") input: RegisterAuthLocalInput,
+	) {
 		return await this.authService.registerLocal(input);
 	}
 
-	@Mutation(() => AuthDto)
-	async login(
+	@Mutation(() => AuthDto, {
+		description: "Login with username and password",
+	})
+	async loginWithCredential(
 		@Args("username") username: string,
 		@Args("password") password: string,
 	) {

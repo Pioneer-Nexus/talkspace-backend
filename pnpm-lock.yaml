@@ -86,6 +86,9 @@ importers:
       graphql:
         specifier: ^16.9.0
         version: 16.9.0
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
       mongoose:
         specifier: ^8.7.0
         version: 8.7.0
@@ -141,6 +144,9 @@ importers:
       '@types/jest':
         specifier: ^29.5.2
         version: 29.5.13
+      '@types/lodash':
+        specifier: ^4.17.13
+        version: 4.17.13
       '@types/node':
         specifier: ^20.3.1
         version: 20.16.10
@@ -1524,6 +1530,9 @@ packages:
 
   '@types/jsonwebtoken@9.0.5':
     resolution: {integrity: sha512-VRLSGzik+Unrup6BsouBeHsf4d1hOEgYWTm/7Nmw1sXoN1+tRly/Gy/po3yeahnP4jfnQWWAhQAqcNfH7ngOkA==}
+
+  '@types/lodash@4.17.13':
+    resolution: {integrity: sha512-lfx+dftrEZcdBPczf9d0Qv0x+j/rfNCMuC6OcfXmO8gkfeNAY88PgKUbvG56whcN23gc27yenwF6oJZXGFpYxg==}
 
   '@types/long@4.0.2':
     resolution: {integrity: sha512-MqTGEo5bj5t157U6fA/BiDynNkn0YknVdh48CMPkTSpFTVmvao5UQmm7uEF6xBEo7qIMAlY/JSleYaE6VOdpaA==}
@@ -6231,6 +6240,8 @@ snapshots:
   '@types/jsonwebtoken@9.0.5':
     dependencies:
       '@types/node': 20.16.10
+
+  '@types/lodash@4.17.13': {}
 
   '@types/long@4.0.2': {}
 

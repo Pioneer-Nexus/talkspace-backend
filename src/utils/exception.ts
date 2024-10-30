@@ -1,3 +1,4 @@
+import ERROR_CODES from "@/constants/error-code";
 import { HttpException, HttpStatus } from "@nestjs/common";
 
 export type ErrorModel = {
@@ -21,7 +22,7 @@ export class BaseException extends HttpException {
 	date: string;
 	readonly context: string;
 	readonly statusCode: number;
-	readonly code?: string;
+	code?: string;
 	readonly parameters: ParametersType;
 
 	constructor(
@@ -41,6 +42,7 @@ export class BaseException extends HttpException {
 			this.parameters = parameters;
 		}
 
+		this.code = (parameters.code as string) || ERROR_CODES.INTERNAL_ERROR;
 		this.statusCode = super.getStatus();
 		this.date = new Date().toISOString();
 	}

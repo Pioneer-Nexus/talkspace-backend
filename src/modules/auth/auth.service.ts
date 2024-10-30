@@ -1,12 +1,14 @@
 import { IConfigAdapter } from "@/infrastructures/config";
 import { ILoggerService } from "@/infrastructures/logger";
 import {
+	ApiBadRequestException,
 	ApiConflictException,
 	ApiUnauthorizedException,
 } from "@/utils/exception";
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcrypt";
+import * as _ from "lodash";
 import { UsersService } from "../user/user.service";
 import { AuthDto } from "./dtos/auth.dto";
 import { CreatedAuthDto } from "./dtos/created-auth.dto";
@@ -14,7 +16,7 @@ import { RegisterAuthLocalInput } from "./dtos/register-auth-local-input.dto";
 import { AuthRepository } from "./repositories/auth.repository";
 import { TokenRepository } from "./repositories/token.repository";
 import { AuthDocument, AuthType } from "./schemas/auth.schema";
-import * as _ from "lodash";
+import ERROR_CODES from "@/constants/error-code";
 
 @Injectable()
 export class AuthService {
@@ -73,34 +75,44 @@ export class AuthService {
 	}
 
 	async refreshToken(refreshToken: string): Promise<AuthDto> {
-		const decoded = (await this.jwtService.verify(refreshToken, {
-			secret: this.config.JWT_SECRET,
-		})) as AuthDocument;
-		const token = this.generateToken(decoded);
+		try {
+			const decoded = (await this.jwtService.verify(refreshToken, {
+				secret: this.config.JWT_SECRET,
+			})) as AuthDocument;
+			const token = this.generateToken(decoded);
 
-		const existingToken = await this.tokenRepository.findOne({
-			refreshToken,
-		});
-
-		if (!existingToken || existingToken.isRevoked) {
-			throw new BadRequestException("Refresh token is invalid");
-		}
-
-		await this.tokenRepository.updateOne(
-			{
+			const existingToken = await this.tokenRepository.findOne({
 				refreshToken,
-			},
-			{
-				refreshToken: token.refreshToken,
-				isRevoked: false,
-				expiredAt: new Date(
-					new Date().getTime() +
-						this.config.JWT_REFRESH_EXPIRED * 1000,
-				),
-			},
-		);
+			});
 
-		return { ...decoded, ...token };
+			if (!existingToken || existingToken.isRevoked) {
+				throw new ApiBadRequestException("Refresh token is invalid", {
+					code: ERROR_CODES.REFRESH_TOKEN_INVALID,
+				});
+			}
+
+			await this.tokenRepository.updateOne(
+				{
+					refreshToken,
+				},
+				{
+					refreshToken: token.refreshToken,
+					isRevoked: false,
+					expiredAt: new Date(
+						new Date().getTime() +
+							this.config.JWT_REFRESH_EXPIRED * 1000,
+					),
+				},
+			);
+
+			return { ...decoded, ...token };
+		} catch (error: any) {
+			if (error.name === "TokenExpiredError") {
+				throw new ApiBadRequestException(error, {
+					code: ERROR_CODES.REFRESH_TOKEN_EXPIRED,
+				});
+			}
+		}
 	}
 
 	async loginLocal(username: string, password: string): Promise<AuthDto> {

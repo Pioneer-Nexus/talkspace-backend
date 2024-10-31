@@ -36,6 +36,7 @@ export class BaseException extends HttpException {
 			.split("\n")
 			.slice(1)
 			.map((d) => d.split(/\sat/).at(1))
+			.filter((d) => d)
 			.map((d) => d.trim());
 
 		if (parameters) {

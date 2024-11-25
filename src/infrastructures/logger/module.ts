@@ -29,7 +29,7 @@ import { Logger } from "winston";
 									timeZone: config.TIME_ZONE,
 								},
 							).format(
-								new Date(timestamp),
+								new Date(timestamp as string),
 							)} - [${context}] ${level}: ${message}`;
 						},
 					),

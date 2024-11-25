@@ -15,7 +15,7 @@ const sdk = new opentelemetry.NodeSDK({
 	resource: new Resource({
 		[ATTR_SERVICE_NAME]: "talkspace-backend",
 	}),
-	spanProcessor: new SimpleSpanProcessor(traceExporter),
+	spanProcessors: [new SimpleSpanProcessor(traceExporter) as any],
 	instrumentations: [
 		new HttpInstrumentation(),
 		new ExpressInstrumentation(),

@@ -43,7 +43,7 @@ export class BaseException extends HttpException {
 			this.parameters = parameters;
 		}
 
-		this.code = (parameters.code as string) || ERROR_CODES.INTERNAL_ERROR;
+		this.code = (parameters?.code as string) ?? ERROR_CODES.INTERNAL_ERROR;
 		this.statusCode = super.getStatus();
 		this.date = new Date().toISOString();
 	}

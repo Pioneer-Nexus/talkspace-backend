@@ -1,13 +1,13 @@
-import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
+import { Args, Mutation, Resolver } from "@nestjs/graphql";
 import { ChatRoomService } from "./chat-room.service";
-import { CreatedChatRoomDto } from "./dtos/created-chat-room.dto";
+import { CreatedChatRoomDto, CreatedChatRoomResponseDto } from "./dtos/created-chat-room.dto";
 
 @Resolver()
 export class ChatRoomResolver {
 	constructor(private readonly chatRoomService: ChatRoomService) {}
 
-	@Mutation()
-	async createChatRoom(@Args() chatRoom: CreatedChatRoomDto) {
+	@Mutation(() => CreatedChatRoomResponseDto)
+	async createChatRoom(@Args("chatRoom") chatRoom: CreatedChatRoomDto): Promise<CreatedChatRoomResponseDto> {
 		const result = await this.chatRoomService.create(chatRoom);
 		return result;
 	}

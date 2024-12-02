@@ -44,7 +44,7 @@ export class LoggerService extends ILoggerService {
 
 	error(message: string, meta?: Record<string, any>) {
 		this.logger.error(message, {
-			// ...this.getRequestData(),
+			...this.getRequestData(),
 			...meta,
 			log_level: "error",
 		});

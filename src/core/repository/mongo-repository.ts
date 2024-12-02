@@ -16,10 +16,7 @@ import { CreatedOrUpdateModel, RemovedModel, UpdatedModel } from "./types";
 export class MongoRepository<T extends Document> implements IRepository<T> {
 	constructor(private readonly model: Model<T>) {}
 
-	async insertMany<TOptions = unknown>(
-		documents: T[],
-		saveOptions?: TOptions,
-	): Promise<void> {
+	async insertMany<TOptions = unknown>(documents: T[], saveOptions?: TOptions): Promise<void> {
 		await this.model.insertMany(documents, saveOptions);
 	}
 
@@ -50,11 +47,7 @@ export class MongoRepository<T extends Document> implements IRepository<T> {
 			return { id: savedResult.id, created: true, updated: false };
 		}
 
-		await this.model.updateOne(
-			{ _id: exists.id },
-			{ $set: document },
-			options,
-		);
+		await this.model.updateOne({ _id: exists.id }, { $set: document }, options);
 
 		return { id: exists.id, created: false, updated: true };
 	}
@@ -67,10 +60,7 @@ export class MongoRepository<T extends Document> implements IRepository<T> {
 		return model.toObject({ virtuals: true });
 	}
 
-	async findOne(
-		filter: FilterQuery<T>,
-		options?: QueryOptions,
-	): Promise<T | null> {
+	async findOne(filter: FilterQuery<T>, options?: QueryOptions): Promise<T | null> {
 		const data = await this.model.findOne(filter, undefined, options);
 
 		if (!data) return null;
@@ -94,11 +84,7 @@ export class MongoRepository<T extends Document> implements IRepository<T> {
 		updated: UpdateWithAggregationPipeline | UpdateQuery<T>,
 		options?: unknown,
 	): Promise<UpdatedModel> {
-		return await this.model.updateOne(
-			filter,
-			{ $set: Object.assign({}, updated) },
-			options,
-		);
+		return await this.model.updateOne(filter, { $set: Object.assign({}, updated) }, options);
 	}
 
 	async findOneAndUpdate(
@@ -108,11 +94,7 @@ export class MongoRepository<T extends Document> implements IRepository<T> {
 	): Promise<T> {
 		Object.assign(options, { new: true });
 
-		const model = await this.model.findOneAndUpdate(
-			filter,
-			{ $set: updated },
-			options,
-		);
+		const model = await this.model.findOneAndUpdate(filter, { $set: updated }, options);
 
 		if (!model) {
 			return null;

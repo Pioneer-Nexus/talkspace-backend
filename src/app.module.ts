@@ -14,6 +14,7 @@ import {
 import { AppCacheModule } from "./infrastructures/cache";
 import { AuthModule } from "@/modules/auth";
 import { UserModule } from "@/modules/user/user.module";
+import { ChatRoomModule } from "./modules/chat-room/chat-room.module";
 
 @Module({
 	imports: [
@@ -26,6 +27,7 @@ import { UserModule } from "@/modules/user/user.module";
 		CatModule,
 		CorrelationModule,
 		UserModule,
+		ChatRoomModule,
 	],
 	providers: [
 		AppResolver,

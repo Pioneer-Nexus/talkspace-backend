@@ -163,4 +163,7 @@ export class AuthService {
 
 		return auth;
 	}
+	async verifyAccessToken(token : string){
+		return this.jwtService.verify(token)
+	}
 }

@@ -31,6 +31,7 @@
     "@nestjs/mongoose": "^10.0.10",
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/websockets": "^10.4.12",
     "@opentelemetry/auto-instrumentations-node": "^0.50.0",
     "@opentelemetry/exporter-metrics-otlp-http": "^0.53.0",
     "@opentelemetry/exporter-trace-otlp-http": "^0.53.0",
@@ -55,6 +56,7 @@
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
     "uuid": "^10.0.0",
+    "websocket": "^1.0.35",
     "winston": "^3.15.0",
     "winston-elasticsearch": "^0.19.0",
     "zod": "^3.23.8"

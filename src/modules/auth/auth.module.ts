@@ -41,6 +41,6 @@ import { LocalStrategy } from "./strategies/local.strategy";
 		AuthResolver,
 		AuthService,
 	],
-	exports: [AuthRepository],
+	exports: [AuthRepository,AuthService],
 })
 export class AuthModule {}

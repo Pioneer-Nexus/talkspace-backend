@@ -1,4 +1,6 @@
 import {
+	ClientSession,
+	Connection,
 	Document,
 	FilterQuery,
 	Model,
@@ -14,7 +16,10 @@ import { IRepository } from "./adapter";
 import { CreatedOrUpdateModel, RemovedModel, UpdatedModel } from "./types";
 
 export class MongoRepository<T extends Document> implements IRepository<T> {
-	constructor(private readonly model: Model<T>) {}
+	constructor(
+		protected readonly model: Model<T>,
+		protected connection?: Connection,
+	) {}
 
 	async insertMany<TOptions = unknown>(documents: T[], saveOptions?: TOptions): Promise<void> {
 		await this.model.insertMany(documents, saveOptions);
@@ -109,5 +114,21 @@ export class MongoRepository<T extends Document> implements IRepository<T> {
 		options?: unknown,
 	): Promise<UpdatedModel> {
 		return await this.model.updateMany(filter, { $set: updated }, options);
+	}
+
+	async transaction<T>(cb: (session: ClientSession) => Promise<T>): Promise<T> {
+		const session = await this.connection.startSession();
+
+		try {
+			session.startTransaction();
+			const result = await cb(session);
+			await session.commitTransaction();
+			return result;
+		} catch (err) {
+			await session.abortTransaction();
+			throw err;
+		} finally {
+			await session.endSession();
+		}
 	}
 }

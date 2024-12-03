@@ -1,6 +1,8 @@
-import { Field, ObjectType } from "@nestjs/graphql";
+import { User } from "@/modules/user/user.schema";
+import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
 import { Prop, Schema } from "@nestjs/mongoose";
 import { HydratedDocument, Types } from "mongoose";
+import { Room } from "./room.schema";
 
 export enum RoomRole {
 	ADMIN = "ADMIN",
@@ -8,24 +10,30 @@ export enum RoomRole {
 	VIEWER = "VIEWER",
 }
 
+registerEnumType(RoomRole, {
+	name: "RoomRole",
+});
+
 @Schema({ timestamps: true })
 @ObjectType()
 export class UserRoom {
 	@Prop({ type: Types.ObjectId, ref: "User", required: true })
-	@Field({ nullable: false })
-	userId: Types.ObjectId;
+	user: Types.ObjectId | User;
+
+	@Prop({ type: Types.ObjectId, ref: "Room", required: true })
+	room: Types.ObjectId | Room;
 
 	@Prop({ type: () => Date, required: true })
 	@Field(() => Date, { nullable: true })
-	lastSeen: Date;
+	lastSeen?: Date;
 
-	@Prop({ type: () => Boolean })
+	@Prop({ type: () => Boolean, default: true })
 	@Field(() => Boolean, { nullable: false, defaultValue: true })
-	isNotify: boolean;
+	isNotify?: boolean;
 
 	@Prop({ type: () => Date })
 	@Field(() => Date, { nullable: true })
-	muteUntil: Date;
+	muteUntil?: Date;
 
 	@Prop({ enum: Object.values(RoomRole), default: RoomRole.MEMBER })
 	@Field(() => RoomRole, { nullable: false })

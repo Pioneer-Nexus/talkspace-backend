@@ -1,6 +1,7 @@
 import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument } from "mongoose";
+import { HydratedDocument, Types } from "mongoose";
+import { UserRoom } from "./user-room.schema";
 import { Webhook } from "./webhook.schema";
 
 export enum RoomType {
@@ -32,8 +33,10 @@ export class Room {
 	imageUrl?: string;
 
 	@Prop()
-	@Field(() => [Webhook], { nullable: false, defaultValue: [] })
 	webhooks: Webhook[];
+
+	@Prop({ type: [{ type: Types.ObjectId, ref: "UserRoom" }] })
+	userRooms: (Types.ObjectId | UserRoom)[];
 }
 
 export type RoomDocument = HydratedDocument<Room>;

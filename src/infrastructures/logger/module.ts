@@ -19,20 +19,13 @@ import { Logger } from "winston";
 				format: winston.format.combine(
 					winston.format.timestamp(),
 					winston.format.colorize(),
-					winston.format.printf(
-						({ timestamp, level, message, context }) => {
-							return `[Winston] - ${new Intl.DateTimeFormat(
-								"en-GB",
-								{
-									dateStyle: "short",
-									timeStyle: "long",
-									timeZone: config.TIME_ZONE,
-								},
-							).format(
-								new Date(timestamp as string),
-							)} - [${context}] ${level}: ${message}`;
-						},
-					),
+					winston.format.printf(({ timestamp, level, message, context }) => {
+						return `[Winston] - ${new Intl.DateTimeFormat("en-GB", {
+							dateStyle: "short",
+							timeStyle: "long",
+							timeZone: config.TIME_ZONE,
+						}).format(new Date(timestamp as string))} - [${context}] ${level}: ${message}`;
+					}),
 				),
 				transports: [
 					new winston.transports.Console({}),

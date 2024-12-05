@@ -3,6 +3,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument, Types } from "mongoose";
 import { UserRoom } from "./user-room.schema";
 import { Webhook } from "./webhook.schema";
+import { BaseEntity } from "@/core/entity/base-entity";
 
 export enum RoomType {
 	PUBLIC = "PUBLIC",
@@ -15,7 +16,7 @@ registerEnumType(RoomType, {
 
 @Schema({ timestamps: true })
 @ObjectType()
-export class Room {
+export class Room extends BaseEntity {
 	@Prop()
 	@Field({ nullable: false })
 	name: string;

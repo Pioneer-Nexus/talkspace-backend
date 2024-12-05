@@ -1,5 +1,5 @@
 import { BaseEntity } from "@/core/entity/base-entity";
-import { Field, InputType, ObjectType, OmitType } from "@nestjs/graphql";
+import { Field, ObjectType, PickType } from "@nestjs/graphql";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument } from "mongoose";
 
@@ -17,7 +17,7 @@ export class User extends BaseEntity {
 	email: string;
 }
 
-@InputType()
-export class UserDto extends OmitType(User, [], InputType) {}
+@ObjectType()
+export class UserDto extends PickType(User, ["_id", "name", "email", "createdAt", "updatedAt"], ObjectType) {}
 
 export const UserSchema = SchemaFactory.createForClass(User);

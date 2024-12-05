@@ -18,4 +18,9 @@ export class UsersService {
 
 		return await this.userRepository.create(user);
 	}
+
+	async findById(id: string): Promise<UserDocument> {
+		const user = await this.userRepository.findById(id);
+		return user;
+	}
 }

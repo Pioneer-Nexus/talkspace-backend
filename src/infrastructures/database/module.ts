@@ -42,6 +42,14 @@ export const MONGO_CONNECTION = "MONGO_CONNECTION";
 			inject: [IConfigAdapter],
 		},
 	],
-	exports: [databaseConnectionProvider],
+	exports: [
+		databaseConnectionProvider,
+		{
+			provide: MONGO_CONNECTION,
+			useFactory: async (config: IConfigAdapter): Promise<Connection> =>
+				(await mongoose.connect(config.DB_CONNECTION_STRING)).connection,
+			inject: [IConfigAdapter],
+		},
+	],
 })
 export class AppDatabaseModule {}

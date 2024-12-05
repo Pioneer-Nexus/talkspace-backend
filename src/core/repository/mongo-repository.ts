@@ -21,8 +21,8 @@ export class MongoRepository<T extends Document> implements IRepository<T> {
 		protected connection?: Connection,
 	) {}
 
-	async insertMany<TOptions = unknown>(documents: T[], saveOptions?: TOptions): Promise<void> {
-		await this.model.insertMany(documents, saveOptions);
+	async insertMany<TOptions = unknown>(documents: Partial<T>[], saveOptions?: TOptions): Promise<T[]> {
+		return await this.model.create(documents, saveOptions);
 	}
 
 	async create(document: Partial<T>, saveOptions?: SaveOptions): Promise<T> {

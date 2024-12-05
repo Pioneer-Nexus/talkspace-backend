@@ -9,7 +9,7 @@ export abstract class IRepository<T> {
 		options?: TOptions,
 	): Promise<CreatedOrUpdateModel>;
 
-	abstract insertMany<TOptions = unknown>(document: T[], saveOptions?: TOptions): Promise<void>;
+	abstract insertMany<TOptions = unknown>(document: T[], saveOptions?: TOptions): Promise<T[]>;
 
 	abstract findAll<TQuery = Partial<T>, TOptions = unknown>(filter: TQuery, options?: TOptions | null): Promise<T[]>;
 

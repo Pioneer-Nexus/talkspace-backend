@@ -1,7 +1,7 @@
 import { Field, InputType, ObjectType, OmitType, PickType } from "@nestjs/graphql";
 import { Room } from "../schemas/room.schema";
 import { Webhook } from "../schemas/webhook.schema";
-import { UserRoomInputDTO } from "./user-room.dto";
+import { UserRoomDto, UserRoomInputDTO } from "./user-room.dto";
 
 @InputType()
 export class WebhookInputDTO extends PickType(Webhook, ["id", "name"], InputType) {}
@@ -20,4 +20,11 @@ export class CreatedChatRoomDto extends OmitType(
 }
 
 @ObjectType()
-export class CreatedChatRoomResponseDto extends OmitType(Room, [], ObjectType) {}
+export class CreatedChatRoomResponseDto extends PickType(
+	Room,
+	["_id", "createdAt", "imageUrl", "name", "status", "type", "updatedAt"],
+	ObjectType,
+) {
+	@Field(() => [UserRoomDto])
+	userRooms: UserRoomDto[];
+}

@@ -1,6 +1,7 @@
+import { BaseEntity } from "@/core/entity/base-entity";
 import { User } from "@/modules/user/user.schema";
 import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
-import { Prop, Schema } from "@nestjs/mongoose";
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument, Types } from "mongoose";
 import { Room } from "./room.schema";
 
@@ -16,14 +17,14 @@ registerEnumType(RoomRole, {
 
 @Schema({ timestamps: true })
 @ObjectType()
-export class UserRoom {
+export class UserRoom extends BaseEntity {
 	@Prop({ type: Types.ObjectId, ref: "User", required: true })
 	user: Types.ObjectId | User;
 
 	@Prop({ type: Types.ObjectId, ref: "Room", required: true })
 	room: Types.ObjectId | Room;
 
-	@Prop({ type: () => Date, required: true })
+	@Prop({ type: () => Date, required: false })
 	@Field(() => Date, { nullable: true })
 	lastSeen?: Date;
 
@@ -41,3 +42,5 @@ export class UserRoom {
 }
 
 export type UserRoomDocument = HydratedDocument<UserRoom>;
+
+export const UserRoomSchema = SchemaFactory.createForClass(UserRoom);

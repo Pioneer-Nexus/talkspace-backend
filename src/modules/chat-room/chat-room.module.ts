@@ -1,13 +1,25 @@
 import { AppDatabaseModule } from "@/infrastructures/database";
 import { generateMongoProvider } from "@/utils/mongo";
 import { Module } from "@nestjs/common";
+import { UserModule } from "../user/user.module";
+import { ChatRoomRepository } from "./repositories/chat-room.repository";
+import { UserRoomRepository } from "./repositories/user-room.repository";
+import { ChatRoomResolver } from "./resolvers/chat-room.resolver";
+import { UserRoomResolver } from "./resolvers/user-room.resolver";
 import { Room } from "./schemas/room.schema";
-import { ChatRoomResolver } from "./chat-room.resolver";
-import { ChatRoomService } from "./chat-room.service";
-import { ChatRoomRepository } from "./chat-room.repository";
+import { UserRoom } from "./schemas/user-room.schema";
+import { ChatRoomService } from "./services/chat-room.service";
 
 @Module({
-	imports: [AppDatabaseModule],
-	providers: [generateMongoProvider(Room), ChatRoomResolver, ChatRoomService, ChatRoomRepository],
+	imports: [AppDatabaseModule, UserModule],
+	providers: [
+		generateMongoProvider(Room),
+		generateMongoProvider(UserRoom),
+		ChatRoomResolver,
+		UserRoomResolver,
+		ChatRoomService,
+		ChatRoomRepository,
+		UserRoomRepository,
+	],
 })
 export class ChatRoomModule {}

@@ -5,16 +5,10 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"type": "node",
+			"command": "pnpm start:dev",
+			"name": "Run pnpm start:dev",
 			"request": "launch",
-			"name": "Debug pnpm start:dev",
-			"runtimeExecutable": "pnpm", // Use pnpm as the runtime
-			"runtimeArgs": ["start:dev"], // Pass the start:dev argument
-			"skipFiles": ["<node_internals>/**"],
-			"console": "integratedTerminal", // Run in the integrated terminal
-			"cwd": "${workspaceFolder}", // Set the current working directory
-			"outFiles": ["${workspaceFolder}/dist/**/*.js"], // Specify output files for debugging
-			"autoAttachChildProcesses": true // Attach to child processes automatically
+			"type": "node-terminal"
 		}
 	]
 }

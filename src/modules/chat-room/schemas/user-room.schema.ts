@@ -4,6 +4,7 @@ import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument, Types } from "mongoose";
 import { Room } from "./room.schema";
+import { BaseDocument } from "@/core/entity/base-document";
 
 export enum RoomRole {
 	ADMIN = "ADMIN",
@@ -41,6 +42,6 @@ export class UserRoom extends BaseEntity {
 	role: RoomRole;
 }
 
-export type UserRoomDocument = HydratedDocument<UserRoom>;
+export type UserRoomDocument = HydratedDocument<UserRoom> & BaseDocument;
 
 export const UserRoomSchema = SchemaFactory.createForClass(UserRoom);

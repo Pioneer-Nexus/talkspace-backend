@@ -34,4 +34,9 @@ export class ChatRoomService {
 	async findById(id: string) {
 		return await this.chatRoomRepository.findById(id);
 	}
+
+	async remove(id: string): Promise<string> {
+		await this.chatRoomRepository.remove({ _id: id });
+		return id;
+	}
 }

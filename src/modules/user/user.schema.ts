@@ -1,9 +1,10 @@
+import { BaseDocument } from "@/core/entity/base-document";
 import { BaseEntity } from "@/core/entity/base-entity";
 import { Field, ObjectType, PickType } from "@nestjs/graphql";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument } from "mongoose";
 
-export type UserDocument = HydratedDocument<User>;
+export type UserDocument = HydratedDocument<User> & BaseDocument;
 
 @Schema({ timestamps: true })
 @ObjectType()

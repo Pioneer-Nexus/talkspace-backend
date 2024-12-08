@@ -4,6 +4,7 @@ import { HydratedDocument, Types } from "mongoose";
 import { UserRoom } from "./user-room.schema";
 import { Webhook } from "./webhook.schema";
 import { BaseEntity } from "@/core/entity/base-entity";
+import { BaseDocument } from "@/core/entity/base-document";
 
 export enum RoomType {
 	PUBLIC = "PUBLIC",
@@ -40,6 +41,6 @@ export class Room extends BaseEntity {
 	userRooms: (Types.ObjectId | UserRoom)[];
 }
 
-export type RoomDocument = HydratedDocument<Room>;
+export type RoomDocument = HydratedDocument<Room> & BaseDocument;
 
 export const RoomSchema = SchemaFactory.createForClass(Room);

@@ -1,5 +1,5 @@
 import { ClientSession } from "mongoose";
-import { CreatedOrUpdateModel, RemovedModel, UpdatedModel } from "./types";
+import { CreatedOrUpdateModel, UpdatedModel } from "./types";
 
 export abstract class IRepository<T> {
 	abstract create<TOptions = unknown>(document: T, saveOptions?: TOptions): Promise<T>;
@@ -15,7 +15,7 @@ export abstract class IRepository<T> {
 
 	abstract findOne<TQuery = Partial<T>, TOptions = unknown>(filter: TQuery, options?: TOptions): Promise<T | null>;
 
-	abstract remove<TQuery = Partial<T>, TOpt = unknown>(filter: TQuery, opt?: TOpt): Promise<RemovedModel>;
+	abstract remove<TQuery = Partial<T>, TOpt = unknown>(filter: TQuery, opt?: TOpt): Promise<number>;
 
 	abstract updateOne<TQuery = Partial<T>, TUpdate = Partial<T>, TOptions = unknown>(
 		filter: TQuery,

@@ -1,7 +1,6 @@
 import {
 	ClientSession,
 	Connection,
-	Document,
 	FilterQuery,
 	Model,
 	QueryOptions,
@@ -12,10 +11,11 @@ import {
 
 import { ApiBadRequestException } from "@/utils/exception";
 
+import { BaseDocument } from "../entity/base-document";
 import { IRepository } from "./adapter";
-import { CreatedOrUpdateModel, RemovedModel, UpdatedModel } from "./types";
+import { CreatedOrUpdateModel, UpdatedModel } from "./types";
 
-export class MongoRepository<T extends Document> implements IRepository<T> {
+export class MongoRepository<T extends BaseDocument> implements IRepository<T> {
 	constructor(
 		protected readonly model: Model<T>,
 		protected connection?: Connection,
@@ -79,9 +79,9 @@ export class MongoRepository<T extends Document> implements IRepository<T> {
 		return (modelList || []).map((u) => u.toObject({ virtuals: true }));
 	}
 
-	async remove(filter: FilterQuery<T>): Promise<RemovedModel> {
-		const { deletedCount } = await this.model.deleteOne(filter);
-		return { deletedCount, deleted: !!deletedCount };
+	async remove(filter: FilterQuery<T>): Promise<number> {
+		const data = await this.model.updateMany(filter, { deletedAt: new Date() });
+		return data.modifiedCount;
 	}
 
 	async updateOne(

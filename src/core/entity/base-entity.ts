@@ -16,7 +16,7 @@ export class BaseEntity {
 	@Field()
 	updatedAt: string;
 
-	@Field()
+	@Field({ nullable: true })
 	@Prop({ type: () => Date })
-	deletedAt: string;
+	deletedAt?: string;
 }

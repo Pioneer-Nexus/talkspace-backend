@@ -37,7 +37,7 @@ export class Room extends BaseEntity {
 	@Prop()
 	webhooks: Webhook[];
 
-	@Prop({ type: [{ type: Types.ObjectId, ref: "UserRoom" }] })
+	@Prop({ type: [Types.ObjectId], ref: "UserRoom" })
 	userRooms: (Types.ObjectId | UserRoom)[];
 }
 

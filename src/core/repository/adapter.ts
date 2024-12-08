@@ -1,5 +1,5 @@
 import { ClientSession } from "mongoose";
-import { CreatedOrUpdateModel, UpdatedModel } from "./types";
+import { CreatedOrUpdateModel, PaginatedDto, PaginationOption, UpdatedModel } from "./types";
 
 export abstract class IRepository<T> {
 	abstract create<TOptions = unknown>(document: T, saveOptions?: TOptions): Promise<T>;
@@ -11,7 +11,11 @@ export abstract class IRepository<T> {
 
 	abstract insertMany<TOptions = unknown>(document: T[], saveOptions?: TOptions): Promise<T[]>;
 
-	abstract findAll<TQuery = Partial<T>, TOptions = unknown>(filter: TQuery, options?: TOptions | null): Promise<T[]>;
+	abstract findAll<TQuery = Partial<T>, TOptions = unknown>(
+		filter: TQuery,
+		paginationOption: PaginationOption,
+		options?: TOptions | null,
+	): Promise<PaginatedDto<T>>;
 
 	abstract findOne<TQuery = Partial<T>, TOptions = unknown>(filter: TQuery, options?: TOptions): Promise<T | null>;
 

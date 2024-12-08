@@ -13,11 +13,11 @@ export class UserRoomService {
 				$in: ids,
 			},
 		});
-		return result;
+		return result.data;
 	}
 
 	async findByRoomId(id: string): Promise<UserRoomDto[]> {
 		const result = await this.userRoomRepository.findAll({ room: new Types.ObjectId(id) });
-		return result;
+		return result.data;
 	}
 }

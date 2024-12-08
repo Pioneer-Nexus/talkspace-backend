@@ -3,6 +3,7 @@ import {
 	Connection,
 	FilterQuery,
 	Model,
+	PipelineStage,
 	QueryOptions,
 	SaveOptions,
 	UpdateQuery,
@@ -13,7 +14,8 @@ import { ApiBadRequestException } from "@/utils/exception";
 
 import { BaseDocument } from "../entity/base-document";
 import { IRepository } from "./adapter";
-import { CreatedOrUpdateModel, UpdatedModel } from "./types";
+import { CreatedOrUpdateModel, PaginatedDto, PaginationOption, UpdatedModel } from "./types";
+import { DEFAULT_PAGINATION_SIZE, generatePaginationAggregation } from "./service";
 
 export class MongoRepository<T extends BaseDocument> implements IRepository<T> {
 	constructor(
@@ -73,10 +75,49 @@ export class MongoRepository<T extends BaseDocument> implements IRepository<T> {
 		return data.toObject({ virtuals: true });
 	}
 
-	async findAll(filter?: FilterQuery<T>): Promise<T[]> {
-		const modelList = await this.model.find(filter);
+	async findAll(
+		_filter: FilterQuery<T>,
+		paginationOption?: PaginationOption,
+		options: QueryOptions<T> = {},
+	): Promise<PaginatedDto<T>> {
+		const filter = {
+			deletedAt: { $exists: false },
+			..._filter,
+		};
 
-		return (modelList || []).map((u) => u.toObject({ virtuals: true }));
+		if (paginationOption) {
+			const modelList = await this.model.find(filter, undefined, {
+				skip: paginationOption.page * paginationOption.pageSize,
+				limit: paginationOption.pageSize,
+				...options,
+			});
+			const totalRecord = await this.model.countDocuments(filter);
+			const totalPage = Math.ceil(totalRecord / paginationOption.pageSize);
+			const data = (modelList || []).map((u) => u.toObject({ virtuals: true }));
+
+			return {
+				data,
+				page: paginationOption.page,
+				pageSize: paginationOption.pageSize,
+				totalRecord,
+				totalPage,
+				hasNext: !!(paginationOption.page > totalPage - 1),
+				hasPrev: !!(paginationOption.page > 0),
+			};
+		}
+
+		const modelList = await this.model.find(filter, undefined, options);
+		const data = (modelList || []).map((u) => u.toObject({ virtuals: true }));
+
+		return {
+			data,
+			page: 0,
+			pageSize: data.length,
+			totalRecord: data.length,
+			totalPage: 1,
+			hasNext: false,
+			hasPrev: false,
+		};
 	}
 
 	async remove(filter: FilterQuery<T>): Promise<number> {
@@ -130,5 +171,37 @@ export class MongoRepository<T extends BaseDocument> implements IRepository<T> {
 		} finally {
 			await session.endSession();
 		}
+	}
+
+	async aggregate(
+		aggregations: PipelineStage[],
+		paginationOption: PaginationOption = DEFAULT_PAGINATION_SIZE,
+	): Promise<PaginatedDto<T>> {
+		const result = (
+			await this.model.aggregate([
+				...aggregations,
+				{
+					$facet: {
+						data: generatePaginationAggregation(paginationOption),
+						count: [{ $count: "count" }],
+					},
+				},
+			])
+		)?.[0] ?? { data: [], count: [{ count: 0 }] };
+
+		const data = result.data;
+		const count = result.count[0]?.count ?? 0;
+
+		const totalPage = Math.ceil(count / paginationOption.pageSize);
+
+		return {
+			data,
+			page: paginationOption.page,
+			pageSize: paginationOption.pageSize,
+			totalRecord: count,
+			totalPage,
+			hasNext: !!(paginationOption.page > totalPage - 1),
+			hasPrev: !!(paginationOption.page > 0),
+		};
 	}
 }

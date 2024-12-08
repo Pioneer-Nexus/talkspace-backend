@@ -1,6 +1,8 @@
+import { PaginatedDto, PaginationOption } from "@/core/repository";
 import { Injectable } from "@nestjs/common";
 import { Types } from "mongoose";
 import { UserDto } from "../../user/user.schema";
+import { ChatRoomDto } from "../dtos/chat-room.dto";
 import { CreatedChatRoomDto } from "../dtos/created-chat-room.dto";
 import { UpdatedChatRoomDto, UpdatedChatRoomResponseDto } from "../dtos/updated-chat-room.dto";
 import { DontAllowToUpdateChatRoom } from "../exceptions/chat-room.exception";
@@ -14,6 +16,15 @@ export class ChatRoomService {
 		private readonly chatRoomRepository: ChatRoomRepository,
 		private readonly userRoomRepository: UserRoomRepository,
 	) {}
+
+	async findUserChatRoom(user: UserDto, paginationOption: PaginationOption): Promise<PaginatedDto<ChatRoomDto>> {
+		return await this.chatRoomRepository.findAllChatRoom(
+			{
+				"userRooms.user": new Types.ObjectId(user._id),
+			},
+			paginationOption,
+		);
+	}
 
 	async create(user: UserDto, room: CreatedChatRoomDto) {
 		return await this.chatRoomRepository.createChatRoom(user, room);

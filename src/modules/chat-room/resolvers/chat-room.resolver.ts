@@ -1,8 +1,10 @@
+import { PaginationOptionDto } from "@/core/dto/pagination-option.dto";
 import { CurrentAuthDto } from "@/modules/auth/dtos/current-auth.dto";
 import { UseGuards } from "@nestjs/common";
-import { Args, Mutation, Parent, ResolveField, Resolver } from "@nestjs/graphql";
+import { Args, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 import { CurrentUser, JwtAuthGuard } from "../../auth";
 import { CreatedChatRoomDto, CreatedChatRoomResponseDto } from "../dtos/created-chat-room.dto";
+import { PaginatedChatRoomDto } from "../dtos/paginated-chat-room.dto";
 import { UpdatedChatRoomDto, UpdatedChatRoomResponseDto } from "../dtos/updated-chat-room.dto";
 import { UserRoomDto } from "../dtos/user-room.dto";
 import { ChatRoomService } from "../services/chat-room.service";
@@ -12,6 +14,14 @@ import { UserRoomService } from "../services/user-room.service";
 @UseGuards(JwtAuthGuard)
 export class ChatRoomResolver {
 	constructor(private readonly chatRoomService: ChatRoomService) {}
+
+	@Query(() => PaginatedChatRoomDto)
+	async getUserChatRooms(
+		@CurrentUser() auth: CurrentAuthDto,
+		@Args("paginationOption", { nullable: true }) paginationOption: PaginationOptionDto,
+	) {
+		return await this.chatRoomService.findUserChatRoom(auth.user, paginationOption);
+	}
 
 	@Mutation(() => CreatedChatRoomResponseDto)
 	async createChatRoom(

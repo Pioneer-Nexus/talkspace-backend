@@ -6,10 +6,10 @@ import { WebhookInputDTO } from "./webhook.dto";
 @InputType()
 export class CreatedChatRoomDto extends OmitType(
 	Room,
-	["webhooks", "userRooms", "createdAt", "updatedAt", "_id"],
+	["webhooks", "userRooms", "createdAt", "updatedAt", "deletedAt", "_id"],
 	InputType,
 ) {
-	@Field(() => [WebhookInputDTO])
+	@Field(() => [WebhookInputDTO], { nullable: true, defaultValue: [] })
 	webhooks: WebhookInputDTO[];
 
 	@Field(() => [UserRoomInputDTO])

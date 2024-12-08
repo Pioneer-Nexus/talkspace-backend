@@ -1,19 +1,15 @@
-import { MiddlewareConsumer, Module } from "@nestjs/common";
-import { AppConfigModule } from "./infrastructures/config";
-import { AppGraphQLModule } from "./infrastructures/graphql";
-import { AppResolver } from "./app.resolver";
-import { APP_FILTER } from "@nestjs/core";
-import { GraphQLExceptionFilter } from "./filters/GraphQLExceptionFilter";
-import { AppDatabaseModule } from "./infrastructures/database";
-import { CatModule } from "./modules/cat";
-import { AppLoggerModule } from "./infrastructures/logger";
-import {
-	CorrelationMiddleware,
-	CorrelationModule,
-} from "./infrastructures/correlation-id";
-import { AppCacheModule } from "./infrastructures/cache";
 import { AuthModule } from "@/modules/auth";
 import { UserModule } from "@/modules/user/user.module";
+import { MiddlewareConsumer, Module } from "@nestjs/common";
+import { APP_FILTER } from "@nestjs/core";
+import { AppResolver } from "./app.resolver";
+import { GraphQLExceptionFilter } from "./filters/GraphQLExceptionFilter";
+import { AppCacheModule } from "./infrastructures/cache";
+import { AppConfigModule } from "./infrastructures/config";
+import { CorrelationMiddleware, CorrelationModule } from "./infrastructures/correlation-id";
+import { AppDatabaseModule } from "./infrastructures/database";
+import { AppGraphQLModule } from "./infrastructures/graphql";
+import { AppLoggerModule } from "./infrastructures/logger";
 import { ChatRoomModule } from "./modules/chat-room/chat-room.module";
 
 @Module({
@@ -24,7 +20,6 @@ import { ChatRoomModule } from "./modules/chat-room/chat-room.module";
 		AppDatabaseModule,
 		AppLoggerModule,
 		AuthModule,
-		CatModule,
 		CorrelationModule,
 		UserModule,
 		ChatRoomModule,

@@ -10,12 +10,10 @@ import {
 	UpdateWithAggregationPipeline,
 } from "mongoose";
 
-import { ApiBadRequestException } from "@/utils/exception";
-
 import { BaseDocument } from "../entity/base-document";
 import { IRepository } from "./adapter";
-import { CreatedOrUpdateModel, PaginatedDto, PaginationOption, UpdatedModel } from "./types";
 import { DEFAULT_PAGINATION_SIZE, generatePaginationAggregation } from "./service";
+import { CreatedOrUpdateModel, PaginatedDto, PaginationOption, UpdatedModel } from "./types";
 
 export class MongoRepository<T extends BaseDocument> implements IRepository<T> {
 	constructor(
@@ -35,28 +33,22 @@ export class MongoRepository<T extends BaseDocument> implements IRepository<T> {
 	}
 
 	async createOrUpdate(
+		filter: FilterQuery<T>,
 		document: UpdateWithAggregationPipeline | UpdateQuery<T>,
-		options?: unknown,
+		options?: QueryOptions<T>,
 	): Promise<CreatedOrUpdateModel> {
-		if (!document["id"]) {
-			throw new ApiBadRequestException("id is required");
-		}
-
-		const exists = await this.findById(document["id"]);
+		let exists = await this.findOne(filter);
 
 		if (!exists) {
-			const createdEntity = new this.model({
-				...document,
-				_id: document["id"],
-			});
+			const createdEntity = new this.model(document);
 			const savedResult = await createdEntity.save(options);
 
-			return { id: savedResult.id, created: true, updated: false };
+			return { id: savedResult._id.toString(), created: true, updated: false };
 		}
 
-		await this.model.updateOne({ _id: exists.id }, { $set: document }, options);
+		exists = await this.model.findOneAndUpdate(filter, document, { ...options, new: true });
 
-		return { id: exists.id, created: false, updated: true };
+		return { id: exists._id.toString(), created: false, updated: true };
 	}
 
 	async findById(id: string | number): Promise<T> {
@@ -140,7 +132,7 @@ export class MongoRepository<T extends BaseDocument> implements IRepository<T> {
 	): Promise<T> {
 		Object.assign(options, { new: true });
 
-		const model = await this.model.findOneAndUpdate(filter, { $set: updated }, options);
+		const model = await this.model.findOneAndUpdate(filter, updated, options);
 
 		if (!model) {
 			return null;

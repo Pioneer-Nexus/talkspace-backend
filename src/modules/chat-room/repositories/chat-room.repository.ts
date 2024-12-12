@@ -3,6 +3,7 @@ import { MONGO_CONNECTION } from "@/infrastructures/database";
 import { Inject, Injectable } from "@nestjs/common";
 import { Connection, Model, Types } from "mongoose";
 import { UserDto } from "../../user/user.schema";
+import { ChatRoomDto } from "../dtos/chat-room.dto";
 import { CreatedChatRoomDto, CreatedChatRoomResponseDto } from "../dtos/created-chat-room.dto";
 import { PaginatedChatRoomDto } from "../dtos/paginated-chat-room.dto";
 import { UpdatedChatRoomDto, UpdatedChatRoomResponseDto } from "../dtos/updated-chat-room.dto";
@@ -18,6 +19,28 @@ export class ChatRoomRepository extends MongoRepository<RoomDocument> {
 		private readonly userRoomRepository: UserRoomRepository,
 	) {
 		super(entity, connection);
+	}
+
+	async addNewUser(userId: string, roomId: string): Promise<ChatRoomDto> {
+		return await this.transaction(async (session) => {
+			const userRoom = await this.userRoomRepository.createOrUpdate(
+				{
+					user: new Types.ObjectId(userId),
+					room: new Types.ObjectId(roomId),
+				},
+				{
+					user: new Types.ObjectId(userId),
+					room: new Types.ObjectId(roomId),
+				},
+				{ session },
+			);
+			const result = await this.findOneAndUpdate(
+				{ _id: new Types.ObjectId(roomId) },
+				{ $push: { userRooms: userRoom.id } },
+				{ session, new: true },
+			);
+			return result as ChatRoomDto;
+		});
 	}
 
 	async findAllChatRoom(filter, paginationOption: PaginationOption): Promise<PaginatedChatRoomDto> {
@@ -71,6 +94,7 @@ export class ChatRoomRepository extends MongoRepository<RoomDocument> {
 					room: room._id,
 					role: userId == user._id ? RoomRole.ADMIN : RoomRole.MEMBER,
 				})),
+				{ session },
 			);
 
 			room.userRooms = userRoomDatas.map((d) => d._id);

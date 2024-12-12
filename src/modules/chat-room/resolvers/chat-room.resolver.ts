@@ -45,6 +45,11 @@ export class ChatRoomResolver {
 		return result;
 	}
 
+	@Mutation(() => ChatRoomDto)
+	async addNewUser(@Args("userId") userId: string, @Args("roomId") roomId: string): Promise<ChatRoomDto> {
+		return await this.chatRoomService.addNewUser(userId, roomId);
+	}
+
 	@Mutation(() => String)
 	async removeChatRoom(@Args("id") id: string): Promise<string> {
 		const result = await this.chatRoomService.remove(id);

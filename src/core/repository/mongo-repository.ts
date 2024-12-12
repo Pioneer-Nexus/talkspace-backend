@@ -46,7 +46,7 @@ export class MongoRepository<T extends BaseDocument> implements IRepository<T> {
 			return { id: savedResult._id.toString(), created: true, updated: false };
 		}
 
-		exists = await this.model.findOneAndUpdate(filter, document, { ...options, new: true });
+		exists = await this.model.findOneAndUpdate(filter, document, { new: true, ...options });
 
 		return { id: exists._id.toString(), created: false, updated: true };
 	}
@@ -130,7 +130,7 @@ export class MongoRepository<T extends BaseDocument> implements IRepository<T> {
 		updated: UpdateWithAggregationPipeline | UpdateQuery<T>,
 		options: QueryOptions = {},
 	): Promise<T> {
-		Object.assign(options, { new: true });
+		Object.assign({ new: true }, options);
 
 		const model = await this.model.findOneAndUpdate(filter, updated, options);
 
@@ -139,6 +139,10 @@ export class MongoRepository<T extends BaseDocument> implements IRepository<T> {
 		}
 
 		return model.toObject({ virtuals: true });
+	}
+
+	async findOneAndRemove(filter: FilterQuery<T>, options: QueryOptions = {}): Promise<T> {
+		return await this.model.findOneAndDelete(filter, { new: true, ...options });
 	}
 
 	async updateMany(

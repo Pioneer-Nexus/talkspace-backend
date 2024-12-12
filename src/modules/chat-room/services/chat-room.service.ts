@@ -34,6 +34,10 @@ export class ChatRoomService {
 		return await this.chatRoomRepository.addNewUser(userId, roomId);
 	}
 
+	async removeUser(userId: string, roomId: string): Promise<ChatRoomDto> {
+		return await this.chatRoomRepository.removeUser(userId, roomId);
+	}
+
 	async update(user: UserDto, room: UpdatedChatRoomDto): Promise<UpdatedChatRoomResponseDto> {
 		const userRoom = await this.userRoomRepository.findOne({
 			room: new Types.ObjectId(room._id),

@@ -20,12 +20,10 @@ import { AppConfigModule, IConfigAdapter } from "../config";
 					origin: "*",
 					credentials: true,
 				},
-				context: ({ req, res }) => ({ req, res }),
 				sortSchema: true,
 				formatError: (error) => {
 					return {
 						message: error.message,
-						locations: error.locations,
 						...error.extensions,
 						path: error.path,
 					};

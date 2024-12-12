@@ -1,5 +1,7 @@
+import EXCEPTION_MESSAGES from "@/core/constants/exception";
 import { MongoRepository, PaginationOption } from "@/core/repository";
 import { MONGO_CONNECTION } from "@/infrastructures/database";
+import { ProcessException } from "@/utils/exception";
 import { Inject, Injectable } from "@nestjs/common";
 import { Connection, Model, Types } from "mongoose";
 import { UserDto } from "../../user/user.schema";
@@ -31,13 +33,36 @@ export class ChatRoomRepository extends MongoRepository<RoomDocument> {
 				{
 					user: new Types.ObjectId(userId),
 					room: new Types.ObjectId(roomId),
+					isNotify: true,
+					role: userId == userId ? RoomRole.ADMIN : RoomRole.MEMBER,
 				},
 				{ session },
 			);
 			const result = await this.findOneAndUpdate(
 				{ _id: new Types.ObjectId(roomId) },
-				{ $push: { userRooms: userRoom.id } },
-				{ session, new: true },
+				{ $addToSet: { userRooms: new Types.ObjectId(userRoom.id) } },
+				{ session },
+			);
+			return result as ChatRoomDto;
+		});
+	}
+
+	async removeUser(userId: string, roomId: string): Promise<ChatRoomDto> {
+		return await this.transaction(async (session) => {
+			const userRoom = await this.userRoomRepository.findOneAndRemove(
+				{
+					user: new Types.ObjectId(userId),
+					room: new Types.ObjectId(roomId),
+				},
+				{ session },
+			);
+			if (!userRoom) {
+				throw new ProcessException(EXCEPTION_MESSAGES.USER_NOT_FOUND_IN_CHAT_ROOM);
+			}
+			const result = await this.findOneAndUpdate(
+				{ _id: new Types.ObjectId(roomId) },
+				{ $pullAll: { userRooms: [new Types.ObjectId(userRoom._id)] } },
+				{ session },
 			);
 			return result as ChatRoomDto;
 		});

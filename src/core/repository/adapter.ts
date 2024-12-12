@@ -1,4 +1,4 @@
-import { ClientSession } from "mongoose";
+import { ClientSession, QueryOptions } from "mongoose";
 import { CreatedOrUpdateModel, PaginatedDto, PaginationOption, UpdatedModel } from "./types";
 
 export abstract class IRepository<T> {
@@ -32,6 +32,8 @@ export abstract class IRepository<T> {
 		updated: TUpdate,
 		options?: TOptions,
 	): Promise<T>;
+
+	abstract findOneAndRemove<TQuery = Partial<T>>(filter: TQuery, options: QueryOptions<T>): Promise<T>;
 
 	abstract updateMany<TQuery = Partial<T>, TUpdate = Partial<T>, TOptions = unknown>(
 		filter: TQuery,

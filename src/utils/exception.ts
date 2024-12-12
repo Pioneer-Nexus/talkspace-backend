@@ -1,4 +1,5 @@
 import ERROR_CODES from "@/constants/error-code";
+import { ExceptionDto } from "@/core/constants/exception";
 import { HttpException, HttpStatus } from "@nestjs/common";
 
 export type ErrorModel = {
@@ -24,12 +25,9 @@ export class BaseException extends HttpException {
 	readonly statusCode: number;
 	code?: string;
 	readonly parameters: ParametersType;
+	extensions: Record<string, any>;
 
-	constructor(
-		message: MessageType,
-		status: HttpStatus,
-		parameters?: ParametersType,
-	) {
+	constructor(message: MessageType, status: HttpStatus, parameters?: ParametersType) {
 		super(message, status);
 
 		this.stackTraceList = this.stack
@@ -76,6 +74,14 @@ export class ApiUnauthorizedException extends BaseException {
 export class ApiBadRequestException extends BaseException {
 	constructor(message?: MessageType, parameters?: ParametersType) {
 		super(message ?? ApiBadRequestException.name, 400, parameters);
+	}
+}
+
+export class ProcessException extends BaseException {
+	constructor(exception: ExceptionDto) {
+		super(exception.message ?? ProcessException.name, 500, {
+			code: exception.code,
+		});
 	}
 }
 

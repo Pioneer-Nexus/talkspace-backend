@@ -15,18 +15,28 @@ export class GraphQLExceptionFilter implements GqlExceptionFilter {
 			return;
 		}
 
-		const { cause, context, stackTraceList, stack, statusCode, message } = exception;
+		const { cause, context, stackTraceList, stack, statusCode, message, code, parameters } = exception;
+
+		const responseException = {
+			cause,
+			context,
+			stackTraceList,
+			stack,
+			statusCode,
+			message,
+			code,
+			parameters,
+		};
 
 		this.loggerService.setContext(exception.name);
 		this.loggerService.error(exception.message, {
-			exception: {
-				cause,
-				context,
-				stackTraceList,
-				stack,
-				statusCode,
-				message,
-			},
+			exception: responseException,
 		});
+
+		exception.extensions = {
+			code,
+		};
+
+		return exception;
 	}
 }

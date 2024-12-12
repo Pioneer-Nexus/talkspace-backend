@@ -12,10 +12,7 @@ import { ChatRoomService } from "./services/chat-room.service";
 import { UserRoomService } from "./services/user-room.service";
 
 @Module({
-	imports: [
-		AppDatabaseModule,
-		UserModule,
-	],
+	imports: [AppDatabaseModule, UserModule],
 	providers: [
 		generateMongoProvider(Room, RoomSchema),
 		generateMongoProvider(UserRoom, UserRoomSchema),

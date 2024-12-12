@@ -1,6 +1,7 @@
 import { Field, InputType, ObjectType, PickType } from "@nestjs/graphql";
 import { Types } from "mongoose";
 import { Room, RoomType } from "../schemas/room.schema";
+import { ChatRoomDto } from "./chat-room.dto";
 
 @InputType()
 export class UpdatedChatRoomDto extends PickType(Room, ["_id", "imageUrl", "name", "status", "type"], InputType) {
@@ -19,7 +20,7 @@ export class UpdatedChatRoomDto extends PickType(Room, ["_id", "imageUrl", "name
 
 @ObjectType()
 export class UpdatedChatRoomResponseDto extends PickType(
-	Room,
+	ChatRoomDto,
 	["_id", "createdAt", "imageUrl", "name", "status", "type", "updatedAt"],
 	ObjectType,
 ) {

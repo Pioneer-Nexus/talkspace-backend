@@ -1,5 +1,9 @@
-import { ObjectType, OmitType } from "@nestjs/graphql";
+import { ObjectType, PickType } from "@nestjs/graphql";
 import { Room } from "../schemas/room.schema";
 
 @ObjectType()
-export class ChatRoomDto extends OmitType(Room, [], ObjectType) {}
+export class ChatRoomDto extends PickType(
+	Room,
+	["_id", "createdAt", "deletedAt", "updatedAt", "imageUrl", "name", "status", "type"],
+	ObjectType,
+) {}

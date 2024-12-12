@@ -9,11 +9,15 @@ import { UpdatedChatRoomDto, UpdatedChatRoomResponseDto } from "../dtos/updated-
 import { UserRoomDto } from "../dtos/user-room.dto";
 import { ChatRoomService } from "../services/chat-room.service";
 import { UserRoomService } from "../services/user-room.service";
+import { ChatRoomDto } from "../dtos/chat-room.dto";
 
-@Resolver()
+@Resolver(() => ChatRoomDto)
 @UseGuards(JwtAuthGuard)
 export class ChatRoomResolver {
-	constructor(private readonly chatRoomService: ChatRoomService) {}
+	constructor(
+		private readonly chatRoomService: ChatRoomService,
+		private readonly userRoomService: UserRoomService,
+	) {}
 
 	@Query(() => PaginatedChatRoomDto)
 	async getUserChatRooms(
@@ -45,6 +49,11 @@ export class ChatRoomResolver {
 	async removeChatRoom(@Args("id") id: string): Promise<string> {
 		const result = await this.chatRoomService.remove(id);
 		return result;
+	}
+
+	@ResolveField(() => [UserRoomDto])
+	async userRooms(@Parent() chatRoomResponse: UpdatedChatRoomResponseDto) {
+		return await this.userRoomService.findByRoomId(chatRoomResponse._id.toString());
 	}
 }
 

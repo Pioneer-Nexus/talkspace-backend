@@ -1,10 +1,10 @@
-import { Field, InputType } from "@nestjs/graphql";
+import { Field, InputType, Int } from "@nestjs/graphql";
 
 @InputType()
 export class PaginationOptionDto {
-	@Field(() => Number, { defaultValue: 0 })
+	@Field(() => Int, { defaultValue: 0 })
 	page: number;
 
-	@Field(() => Number, { defaultValue: 10 })
+	@Field(() => Int, { defaultValue: 10 })
 	pageSize: number;
 }

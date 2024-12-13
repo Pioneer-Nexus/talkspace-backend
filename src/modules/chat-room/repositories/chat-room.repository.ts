@@ -9,10 +9,10 @@ import { ChatRoomDto } from "../dtos/chat-room.dto";
 import { CreatedChatRoomDto, CreatedChatRoomResponseDto } from "../dtos/created-chat-room.dto";
 import { PaginatedChatRoomDto } from "../dtos/paginated-chat-room.dto";
 import { UpdatedChatRoomDto, UpdatedChatRoomResponseDto } from "../dtos/updated-chat-room.dto";
+import { UserRoomDto } from "../dtos/user-room.dto";
 import { Room, RoomDocument } from "../schemas/room.schema";
 import { RoomRole, UserRoom } from "../schemas/user-room.schema";
 import { UserRoomRepository } from "./user-room.repository";
-import { UserRoomDto } from "../dtos/user-room.dto";
 
 @Injectable()
 export class ChatRoomRepository extends MongoRepository<RoomDocument> {

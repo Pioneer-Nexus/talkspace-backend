@@ -10,6 +10,7 @@ import { DontAllowToUpdateChatRoom } from "../exceptions/chat-room.exception";
 import { ChatRoomRepository } from "../repositories/chat-room.repository";
 import { UserRoomRepository } from "../repositories/user-room.repository";
 import { RoomRole } from "../schemas/user-room.schema";
+import { PaginatedUserRoomDto } from "../dtos/paginated-user-room.dto";
 
 @Injectable()
 export class ChatRoomService {
@@ -23,6 +24,13 @@ export class ChatRoomService {
 			{
 				"userRooms.user": new Types.ObjectId(user._id),
 			},
+			paginationOption,
+		);
+	}
+
+	async findAllPendingInvites(roomId: string, paginationOption: PaginationOption): Promise<PaginatedUserRoomDto> {
+		return await this.userRoomRepository.findAll(
+			{ room: new Types.ObjectId(roomId), role: RoomRole.PENDING_INVITE },
 			paginationOption,
 		);
 	}

@@ -10,6 +10,7 @@ import { UserRoomDto } from "../dtos/user-room.dto";
 import { ChatRoomService } from "../services/chat-room.service";
 import { UserRoomService } from "../services/user-room.service";
 import { ChatRoomDto } from "../dtos/chat-room.dto";
+import { PaginatedUserRoomDto } from "../dtos/paginated-user-room.dto";
 
 @Resolver(() => ChatRoomDto)
 @UseGuards(JwtAuthGuard)
@@ -25,6 +26,15 @@ export class ChatRoomResolver {
 		@Args("paginationOption", { nullable: true }) paginationOption: PaginationOptionDto,
 	) {
 		return await this.chatRoomService.findUserChatRoom(auth.user, paginationOption);
+	}
+
+	@Query(() => PaginatedUserRoomDto)
+	async getChatRoomPendingInvites(
+		@CurrentUser() auth: CurrentAuthDto,
+		@Args("roomId") roomId: string,
+		@Args("paginationOption", { nullable: true }) paginationOption: PaginationOptionDto,
+	) {
+		return await this.chatRoomService.findAllPendingInvites(roomId, paginationOption);
 	}
 
 	@Mutation(() => CreatedChatRoomResponseDto)

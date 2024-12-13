@@ -9,6 +9,7 @@ import { BaseDocument } from "@/core/entity/base-document";
 export enum RoomRole {
 	ADMIN = "ADMIN",
 	MEMBER = "MEMBER",
+	PENDING_INVITE = "PENDING_INVITE",
 	VIEWER = "VIEWER",
 }
 

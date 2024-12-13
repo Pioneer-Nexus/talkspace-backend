@@ -34,7 +34,7 @@ export class ChatRoomRepository extends MongoRepository<RoomDocument> {
 					user: new Types.ObjectId(userId),
 					room: new Types.ObjectId(roomId),
 					isNotify: true,
-					role: userId == userId ? RoomRole.ADMIN : RoomRole.MEMBER,
+					role: RoomRole.PENDING_INVITE,
 				},
 				{ session },
 			);

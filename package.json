@@ -46,6 +46,7 @@
     "@opentelemetry/semantic-conventions": "^1.27.0",
     "bcrypt": "^5.1.1",
     "graphql": "^16.9.0",
+    "graphql-type-json": "^0.3.2",
     "lodash": "^4.17.21",
     "mongoose": "^8.8.4",
     "nest-winston": "^1.9.7",

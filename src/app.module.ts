@@ -11,6 +11,7 @@ import { AppDatabaseModule } from "./infrastructures/database";
 import { AppGraphQLModule } from "./infrastructures/graphql";
 import { AppLoggerModule } from "./infrastructures/logger";
 import { ChatRoomModule } from "./modules/chat-room/chat-room.module";
+import { NotificationModule } from './modules/notification/notification.module';
 
 @Module({
 	imports: [
@@ -23,6 +24,7 @@ import { ChatRoomModule } from "./modules/chat-room/chat-room.module";
 		CorrelationModule,
 		UserModule,
 		ChatRoomModule,
+		NotificationModule,
 	],
 	providers: [
 		AppResolver,

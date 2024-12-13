@@ -1,16 +1,16 @@
 import { PaginationOptionDto } from "@/core/dto/pagination-option.dto";
-import { CurrentAuthDto } from "@/modules/auth/dtos/current-auth.dto";
+import { CurrentUserDto } from "@/modules/auth/dtos/current-auth.dto";
 import { UseGuards } from "@nestjs/common";
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 import { CurrentUser, JwtAuthGuard } from "../../auth";
+import { ChatRoomDto } from "../dtos/chat-room.dto";
 import { CreatedChatRoomDto, CreatedChatRoomResponseDto } from "../dtos/created-chat-room.dto";
 import { PaginatedChatRoomDto } from "../dtos/paginated-chat-room.dto";
+import { PaginatedUserRoomDto } from "../dtos/paginated-user-room.dto";
 import { UpdatedChatRoomDto, UpdatedChatRoomResponseDto } from "../dtos/updated-chat-room.dto";
 import { UserRoomDto } from "../dtos/user-room.dto";
 import { ChatRoomService } from "../services/chat-room.service";
 import { UserRoomService } from "../services/user-room.service";
-import { ChatRoomDto } from "../dtos/chat-room.dto";
-import { PaginatedUserRoomDto } from "../dtos/paginated-user-room.dto";
 
 @Resolver(() => ChatRoomDto)
 @UseGuards(JwtAuthGuard)
@@ -22,15 +22,15 @@ export class ChatRoomResolver {
 
 	@Query(() => PaginatedChatRoomDto)
 	async getUserChatRooms(
-		@CurrentUser() auth: CurrentAuthDto,
+		@CurrentUser() user: CurrentUserDto,
 		@Args("paginationOption", { nullable: true }) paginationOption: PaginationOptionDto,
 	) {
-		return await this.chatRoomService.findUserChatRoom(auth.user, paginationOption);
+		return await this.chatRoomService.findUserChatRoom(user, paginationOption);
 	}
 
 	@Query(() => PaginatedUserRoomDto)
 	async getChatRoomPendingInvites(
-		@CurrentUser() auth: CurrentAuthDto,
+		@CurrentUser() user: CurrentUserDto,
 		@Args("roomId") roomId: string,
 		@Args("paginationOption", { nullable: true }) paginationOption: PaginationOptionDto,
 	) {
@@ -40,18 +40,18 @@ export class ChatRoomResolver {
 	@Mutation(() => CreatedChatRoomResponseDto)
 	async createChatRoom(
 		@Args("chatRoom") chatRoom: CreatedChatRoomDto,
-		@CurrentUser() auth: CurrentAuthDto,
+		@CurrentUser() user: CurrentUserDto,
 	): Promise<CreatedChatRoomResponseDto> {
-		const result = await this.chatRoomService.create(auth.user, chatRoom);
+		const result = await this.chatRoomService.create(user, chatRoom);
 		return result;
 	}
 
 	@Mutation(() => UpdatedChatRoomResponseDto)
 	async updateChatRoom(
 		@Args("chatRoom") chatRoom: UpdatedChatRoomDto,
-		@CurrentUser() auth: CurrentAuthDto,
+		@CurrentUser() user: CurrentUserDto,
 	): Promise<UpdatedChatRoomResponseDto> {
-		const result = await this.chatRoomService.update(auth.user, chatRoom);
+		const result = await this.chatRoomService.update(user, chatRoom);
 		return result;
 	}
 

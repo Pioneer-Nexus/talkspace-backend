@@ -1,4 +1,4 @@
-import { ObjectType, OmitType } from "@nestjs/graphql";
+import { ObjectType, OmitType, PickType } from "@nestjs/graphql";
 import { Auth } from "../schemas/auth.schema";
 import { User } from "@/modules/user/user.schema";
 
@@ -6,4 +6,8 @@ import { User } from "@/modules/user/user.schema";
 export class CurrentAuthDto extends OmitType(Auth, ["password"], ObjectType) {}
 
 @ObjectType()
-export class CurrentUserDto extends OmitType(User, [], ObjectType) {}
+export class CurrentUserDto extends PickType(
+	User,
+	["_id", "createdAt", "updatedAt", "deletedAt", "email", "name"],
+	ObjectType,
+) {}

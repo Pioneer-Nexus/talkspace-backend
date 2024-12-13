@@ -1,5 +1,6 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 import { Prop, Schema } from "@nestjs/mongoose";
+import { GraphQLDateTimeISO } from "graphql-scalars";
 import { Types } from "mongoose";
 
 @ObjectType()
@@ -10,13 +11,13 @@ export class BaseEntity {
 	@Field(() => String)
 	_id: Types.ObjectId;
 
-	@Field()
-	createdAt: string;
+	@Field(() => GraphQLDateTimeISO)
+	createdAt: Date;
 
-	@Field()
-	updatedAt: string;
+	@Field(() => GraphQLDateTimeISO)
+	updatedAt: Date;
 
-	@Field({ nullable: true })
+	@Field(() => GraphQLDateTimeISO, { nullable: true })
 	@Prop({ type: () => Date })
-	deletedAt?: string;
+	deletedAt?: Date;
 }

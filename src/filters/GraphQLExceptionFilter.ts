@@ -2,6 +2,7 @@ import { ILoggerService } from "@/infrastructures/logger";
 import { BaseException } from "@/utils/exception";
 import { ArgumentsHost, Catch } from "@nestjs/common";
 import { GqlContextType, GqlExceptionFilter } from "@nestjs/graphql";
+import { Response } from "express";
 
 @Catch()
 export class GraphQLExceptionFilter implements GqlExceptionFilter {
@@ -11,8 +12,16 @@ export class GraphQLExceptionFilter implements GqlExceptionFilter {
 		const isGraphql = host.getType<GqlContextType>() === "graphql";
 
 		if (!isGraphql) {
-			// do sth...
-			return;
+			const ctx = host.switchToHttp();
+			const response = ctx.getResponse<Response>() as Response;
+			const request = ctx.getRequest<Request>();
+			const status = exception.getStatus();
+
+			return response.status(status).json({
+				statusCode: status,
+				timestamp: new Date().toISOString(),
+				path: request.url,
+			});
 		}
 
 		const { cause, context, stackTraceList, stack, statusCode, message, code, parameters } = exception;

@@ -130,9 +130,7 @@ export class MongoRepository<T extends BaseDocument> implements IRepository<T> {
 		updated: UpdateWithAggregationPipeline | UpdateQuery<T>,
 		options: QueryOptions = {},
 	): Promise<T> {
-		Object.assign({ new: true }, options);
-
-		const model = await this.model.findOneAndUpdate(filter, updated, options);
+		const model = await this.model.findOneAndUpdate(filter, updated, { new: true, ...options });
 
 		if (!model) {
 			return null;

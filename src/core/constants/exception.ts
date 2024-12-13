@@ -8,6 +8,10 @@ const EXCEPTION_MESSAGES: Record<string, ExceptionDto> = {
 		message: "User is not found in chat room",
 		code: "USER_NOT_FOUND_IN_CHAT_ROOM",
 	},
+	USER_ALREADY_IN_CHAT_ROOM: {
+		message: "User is already in chat room",
+		code: "USER_ALREADY_IN_CHAT_ROOM",
+	},
 };
 
 export default EXCEPTION_MESSAGES;

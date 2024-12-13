@@ -55,6 +55,11 @@ export class ChatRoomResolver {
 		return await this.chatRoomService.removeUser(userId, roomId);
 	}
 
+	@Mutation(() => UserRoomDto)
+	async acceptToJoin(@Args("userId") userId: string, @Args("roomId") roomId: string): Promise<UserRoomDto> {
+		return await this.chatRoomService.acceptToJoin(userId, roomId);
+	}
+
 	@Mutation(() => String)
 	async removeChatRoom(@Args("id") id: string): Promise<string> {
 		const result = await this.chatRoomService.remove(id);

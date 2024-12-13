@@ -12,6 +12,7 @@ import { UpdatedChatRoomDto, UpdatedChatRoomResponseDto } from "../dtos/updated-
 import { Room, RoomDocument } from "../schemas/room.schema";
 import { RoomRole, UserRoom } from "../schemas/user-room.schema";
 import { UserRoomRepository } from "./user-room.repository";
+import { UserRoomDto } from "../dtos/user-room.dto";
 
 @Injectable()
 export class ChatRoomRepository extends MongoRepository<RoomDocument> {
@@ -21,6 +22,19 @@ export class ChatRoomRepository extends MongoRepository<RoomDocument> {
 		private readonly userRoomRepository: UserRoomRepository,
 	) {
 		super(entity, connection);
+	}
+
+	async acceptToJoin(userId: string, roomId: string): Promise<UserRoomDto> {
+		return await this.userRoomRepository.findOneAndUpdate(
+			{
+				user: new Types.ObjectId(userId),
+				room: new Types.ObjectId(roomId),
+			},
+			{
+				role: RoomRole.MEMBER,
+				isNotify: true,
+			},
+		);
 	}
 
 	async addNewUser(userId: string, roomId: string): Promise<ChatRoomDto> {
@@ -38,6 +52,9 @@ export class ChatRoomRepository extends MongoRepository<RoomDocument> {
 				},
 				{ session },
 			);
+			if (userRoom.updated) {
+				throw new ProcessException(EXCEPTION_MESSAGES.USER_ALREADY_IN_CHAT_ROOM);
+			}
 			const result = await this.findOneAndUpdate(
 				{ _id: new Types.ObjectId(roomId) },
 				{ $addToSet: { userRooms: new Types.ObjectId(userRoom.id) } },

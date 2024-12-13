@@ -5,6 +5,7 @@ import { UserDto } from "../../user/user.schema";
 import { ChatRoomDto } from "../dtos/chat-room.dto";
 import { CreatedChatRoomDto } from "../dtos/created-chat-room.dto";
 import { UpdatedChatRoomDto, UpdatedChatRoomResponseDto } from "../dtos/updated-chat-room.dto";
+import { UserRoomDto } from "../dtos/user-room.dto";
 import { DontAllowToUpdateChatRoom } from "../exceptions/chat-room.exception";
 import { ChatRoomRepository } from "../repositories/chat-room.repository";
 import { UserRoomRepository } from "../repositories/user-room.repository";
@@ -36,6 +37,10 @@ export class ChatRoomService {
 
 	async removeUser(userId: string, roomId: string): Promise<ChatRoomDto> {
 		return await this.chatRoomRepository.removeUser(userId, roomId);
+	}
+
+	async acceptToJoin(userId: string, roomId: string): Promise<UserRoomDto> {
+		return await this.chatRoomRepository.acceptToJoin(userId, roomId);
 	}
 
 	async update(user: UserDto, room: UpdatedChatRoomDto): Promise<UpdatedChatRoomResponseDto> {

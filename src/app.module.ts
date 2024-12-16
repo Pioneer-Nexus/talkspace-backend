@@ -10,8 +10,9 @@ import { CorrelationMiddleware, CorrelationModule } from "./infrastructures/corr
 import { AppDatabaseModule } from "./infrastructures/database";
 import { AppGraphQLModule } from "./infrastructures/graphql";
 import { AppLoggerModule } from "./infrastructures/logger";
+import { AppQueueModule } from "./infrastructures/queue";
 import { ChatRoomModule } from "./modules/chat-room/chat-room.module";
-import { NotificationModule } from './modules/notification/notification.module';
+import { NotificationModule } from "./modules/notification/notification.module";
 
 @Module({
 	imports: [
@@ -20,6 +21,7 @@ import { NotificationModule } from './modules/notification/notification.module';
 		AppGraphQLModule,
 		AppDatabaseModule,
 		AppLoggerModule,
+		AppQueueModule,
 		AuthModule,
 		CorrelationModule,
 		UserModule,

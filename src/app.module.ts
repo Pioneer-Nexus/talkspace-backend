@@ -13,6 +13,7 @@ import { AppLoggerModule } from "./infrastructures/logger";
 import { AppQueueModule } from "./infrastructures/queue";
 import { ChatRoomModule } from "./modules/chat-room/chat-room.module";
 import { NotificationModule } from "./modules/notification/notification.module";
+import { MessageModule } from './modules/message/message.module';
 
 @Module({
 	imports: [
@@ -27,6 +28,7 @@ import { NotificationModule } from "./modules/notification/notification.module";
 		UserModule,
 		ChatRoomModule,
 		NotificationModule,
+		MessageModule,
 	],
 	providers: [
 		AppResolver,

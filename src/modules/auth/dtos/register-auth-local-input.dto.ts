@@ -1,4 +1,4 @@
-import { User } from "@/modules/user/user.schema";
+import { User } from "@/modules/user/schemas/user.schema";
 import { InputType, IntersectionType, PickType } from "@nestjs/graphql";
 import { Auth } from "../schemas/auth.schema";
 

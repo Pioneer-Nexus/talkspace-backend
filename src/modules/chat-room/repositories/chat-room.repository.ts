@@ -4,7 +4,7 @@ import { MONGO_CONNECTION } from "@/infrastructures/database";
 import { ProcessException } from "@/utils/exception";
 import { Inject, Injectable } from "@nestjs/common";
 import { Connection, Model, Types } from "mongoose";
-import { UserDto } from "../../user/user.schema";
+import { UserDto } from "../../user/schemas/user.schema";
 import { ChatRoomDto } from "../dtos/chat-room.dto";
 import { CreatedChatRoomDto, CreatedChatRoomResponseDto } from "../dtos/created-chat-room.dto";
 import { PaginatedChatRoomDto } from "../dtos/paginated-chat-room.dto";

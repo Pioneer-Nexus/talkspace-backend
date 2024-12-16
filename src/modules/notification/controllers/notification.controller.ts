@@ -1,6 +1,6 @@
 import { ISseService } from "@/infrastructures/server-sent-event/sse.adapter";
 import { JwtSseAuthGuard } from "@/modules/auth";
-import { UserDto } from "@/modules/user/user.schema";
+import { UserDto } from "@/modules/user/schemas/user.schema";
 import { Controller, MessageEvent, Req, Res, Sse, UseGuards } from "@nestjs/common";
 import { Response } from "express";
 import { Observable, Subject } from "rxjs";

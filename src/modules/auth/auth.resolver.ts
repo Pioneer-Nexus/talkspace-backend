@@ -1,4 +1,5 @@
-import { Args, Mutation, Resolver } from "@nestjs/graphql";
+import { GraphQlResolverContext } from "@/infrastructures/graphql";
+import { Args, Context, Mutation, Resolver } from "@nestjs/graphql";
 import { AuthService } from "./auth.service";
 import { AuthDto } from "./dtos/auth.dto";
 import { CreatedAuthDto } from "./dtos/created-auth.dto";
@@ -11,9 +12,7 @@ export class AuthResolver {
 	@Mutation(() => CreatedAuthDto, {
 		description: "Register new user with username and password",
 	})
-	async registerUserWithCredential(
-		@Args("input") input: RegisterAuthLocalInput,
-	) {
+	async registerUserWithCredential(@Args("input") input: RegisterAuthLocalInput) {
 		return await this.authService.registerLocal(input);
 	}
 
@@ -23,8 +22,14 @@ export class AuthResolver {
 	async loginWithCredential(
 		@Args("username") username: string,
 		@Args("password") password: string,
+		@Context() context: GraphQlResolverContext,
 	) {
 		const authInfo = await this.authService.loginLocal(username, password);
+		await this.authService.saveSignInHistory(
+			authInfo.user._id.toString(),
+			context.req.ip,
+			context.req.headers["user-agent"],
+		);
 
 		return authInfo;
 	}

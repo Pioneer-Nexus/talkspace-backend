@@ -1,19 +1,15 @@
 import { AppCacheModule } from "@/infrastructures/cache";
 import { AppDatabaseModule } from "@/infrastructures/database";
 import { AppLoggerModule } from "@/infrastructures/logger";
-import { User, UserSchema } from "@/modules/user/user.schema";
+import { User, UserSchema } from "@/modules/user/schemas/user.schema";
 import { generateMongoProvider } from "@/utils/mongo";
 import { Module } from "@nestjs/common";
 import { UserRepository } from "./user.repository";
-import { UsersService } from "./user.service";
+import { UserService } from "./user.service";
 
 @Module({
-	providers: [
-		generateMongoProvider(User, UserSchema),
-		UsersService,
-		UserRepository,
-	],
+	providers: [generateMongoProvider(User, UserSchema), UserService, UserRepository],
 	imports: [AppCacheModule, AppDatabaseModule, AppLoggerModule],
-	exports: [UsersService],
+	exports: [UserService],
 })
 export class UserModule {}

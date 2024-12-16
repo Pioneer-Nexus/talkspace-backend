@@ -1,5 +1,5 @@
-import { UserDto } from "@/modules/user/user.schema";
-import { UsersService } from "@/modules/user/user.service";
+import { UserDto } from "@/modules/user/schemas/user.schema";
+import { UserService } from "@/modules/user/user.service";
 import { UseGuards } from "@nestjs/common";
 import { Parent, ResolveField, Resolver } from "@nestjs/graphql";
 import { JwtAuthGuard } from "../../auth";
@@ -12,7 +12,7 @@ import { ChatRoomService } from "../services/chat-room.service";
 export class UserRoomResolver {
 	constructor(
 		private readonly chatRoomService: ChatRoomService,
-		private readonly userService: UsersService,
+		private readonly userService: UserService,
 	) {}
 
 	@ResolveField(() => ChatRoomDto)

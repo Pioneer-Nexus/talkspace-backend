@@ -1,7 +1,7 @@
 import { PaginatedDto, PaginationOption } from "@/core/repository";
 import { Injectable } from "@nestjs/common";
 import { Types } from "mongoose";
-import { UserDto } from "../../user/user.schema";
+import { UserDto } from "../../user/schemas/user.schema";
 import { ChatRoomDto } from "../dtos/chat-room.dto";
 import { CreatedChatRoomDto } from "../dtos/created-chat-room.dto";
 import { UpdatedChatRoomDto, UpdatedChatRoomResponseDto } from "../dtos/updated-chat-room.dto";

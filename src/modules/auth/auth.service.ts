@@ -1,15 +1,11 @@
 import { IConfigAdapter } from "@/infrastructures/config";
 import { ILoggerService } from "@/infrastructures/logger";
-import {
-	ApiBadRequestException,
-	ApiConflictException,
-	ApiUnauthorizedException,
-} from "@/utils/exception";
+import { ApiBadRequestException, ApiConflictException, ApiUnauthorizedException } from "@/utils/exception";
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcrypt";
 import * as _ from "lodash";
-import { UsersService } from "../user/user.service";
+import { UserService } from "../user/user.service";
 import { AuthDto } from "./dtos/auth.dto";
 import { CreatedAuthDto } from "./dtos/created-auth.dto";
 import { RegisterAuthLocalInput } from "./dtos/register-auth-local-input.dto";
@@ -17,29 +13,23 @@ import { AuthRepository } from "./repositories/auth.repository";
 import { TokenRepository } from "./repositories/token.repository";
 import { AuthDocument, AuthType } from "./schemas/auth.schema";
 import ERROR_CODES from "@/constants/error-code";
+import { SignInHistoryDto } from "./dtos/sign-in-history.dto";
 
 @Injectable()
 export class AuthService {
 	constructor(
 		private readonly authRepository: AuthRepository,
 		private readonly tokenRepository: TokenRepository,
-		private readonly userService: UsersService,
+		private readonly userService: UserService,
 		private readonly logger: ILoggerService,
 		private readonly jwtService: JwtService,
 		private readonly config: IConfigAdapter,
 	) {}
 
-	async validateLocalUser(
-		username: string,
-		password: string,
-	): Promise<AuthDocument | null> {
-		const user = await this.authRepository.findOne(
-			{ username },
-			{ populate: "user" },
-		);
+	async validateLocalUser(username: string, password: string): Promise<AuthDocument | null> {
+		const user = await this.authRepository.findOne({ username }, { populate: "user" });
 
-		if (!user)
-			throw new ApiUnauthorizedException("Username or password is wrong");
+		if (!user) throw new ApiUnauthorizedException("Username or password is wrong");
 
 		const isMatch = await bcrypt.compare(password, user.password);
 		if (user && isMatch) {
@@ -54,16 +44,7 @@ export class AuthService {
 		accessToken: string;
 		refreshToken: string;
 	} {
-		const authData = _.pick(_authData, [
-			"_id",
-			"__v",
-			"id",
-			"type",
-			"username",
-			"user",
-			"createdAt",
-			"updatedAt",
-		]);
+		const authData = _.pick(_authData, ["_id", "__v", "id", "type", "username", "user", "createdAt", "updatedAt"]);
 		const accessToken = this.jwtService.sign(authData, {
 			expiresIn: `${this.config.JWT_EXPIRED}s`,
 		});
@@ -98,10 +79,7 @@ export class AuthService {
 				{
 					refreshToken: token.refreshToken,
 					isRevoked: false,
-					expiredAt: new Date(
-						new Date().getTime() +
-							this.config.JWT_REFRESH_EXPIRED * 1000,
-					),
+					expiredAt: new Date(new Date().getTime() + this.config.JWT_REFRESH_EXPIRED * 1000),
 				},
 			);
 
@@ -118,25 +96,20 @@ export class AuthService {
 	async loginLocal(username: string, password: string): Promise<AuthDto> {
 		const auth = await this.validateLocalUser(username, password);
 
-		if (!auth)
-			throw new ApiUnauthorizedException("Username or password is wrong");
+		if (!auth) throw new ApiUnauthorizedException("Username or password is wrong");
 
 		const token = this.generateToken(auth);
 
 		await this.tokenRepository.create({
 			refreshToken: token.refreshToken,
 			isRevoked: false,
-			expiredAt: new Date(
-				new Date().getTime() + this.config.JWT_REFRESH_EXPIRED * 1000,
-			),
+			expiredAt: new Date(new Date().getTime() + this.config.JWT_REFRESH_EXPIRED * 1000),
 		});
 
 		return { ...token, ...auth };
 	}
 
-	async registerLocal(
-		input: RegisterAuthLocalInput,
-	): Promise<CreatedAuthDto> {
+	async registerLocal(input: RegisterAuthLocalInput): Promise<CreatedAuthDto> {
 		const { name, email, password } = input;
 
 		const salt = await bcrypt.genSalt(10);
@@ -147,9 +120,7 @@ export class AuthService {
 		});
 
 		if (existingAuth) {
-			throw new ApiConflictException(
-				`Account with email: ${email} already existed`,
-			);
+			throw new ApiConflictException(`Account with email: ${email} already existed`);
 		}
 
 		const user = await this.userService.create({ name, email });
@@ -163,7 +134,11 @@ export class AuthService {
 
 		return auth;
 	}
-	async verifyAccessToken(token : string){
-		return this.jwtService.verify(token)
+	async verifyAccessToken(token: string) {
+		return this.jwtService.verify(token);
+	}
+
+	async saveSignInHistory(userId: string, ip: string, userAgent: string): Promise<void> {
+		await this.userService.addSignInHistory(userId, new SignInHistoryDto(ip, userAgent));
 	}
 }

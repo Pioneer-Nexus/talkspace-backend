@@ -21,6 +21,7 @@ import { AppConfigModule, IConfigAdapter } from "../config";
 					credentials: true,
 				},
 				sortSchema: true,
+				context: ({ req }) => ({ req }),
 				formatError: (error) => {
 					return {
 						message: error.message,

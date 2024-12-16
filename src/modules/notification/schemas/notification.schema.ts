@@ -1,6 +1,6 @@
 import { BaseDocument } from "@/core/entity/base-document";
 import { BaseEntity } from "@/core/entity/base-entity";
-import { User } from "@/modules/user/user.schema";
+import { User } from "@/modules/user/schemas/user.schema";
 import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { GraphQLDateTimeISO } from "graphql-scalars";

@@ -1,6 +1,6 @@
 import { ObjectType, OmitType, PickType } from "@nestjs/graphql";
 import { Auth } from "../schemas/auth.schema";
-import { User } from "@/modules/user/user.schema";
+import { User } from "@/modules/user/schemas/user.schema";
 
 @ObjectType()
 export class CurrentAuthDto extends OmitType(Auth, ["password"], ObjectType) {}

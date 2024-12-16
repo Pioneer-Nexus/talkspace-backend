@@ -1,12 +1,22 @@
 import { Injectable } from "@nestjs/common";
 import { CreateNotificationDto } from "../dtos/create-notification.dto";
 import { NotificationRepository } from "../repositories/notification.repository";
+import { InjectQueue } from "@nestjs/bull";
+import { notificationJob } from "@/core/constants/jobs";
+import { Queue } from "bull";
 
 @Injectable()
 export class NotificationService {
-	constructor(private readonly notificationRepository: NotificationRepository) {}
+	constructor(
+		private readonly notificationRepository: NotificationRepository,
+		@InjectQueue(notificationJob.name) private notificationQueue: Queue,
+	) {}
 
 	async create(data: CreateNotificationDto) {
-		return await this.notificationRepository.create(data);
+		const notification = await this.notificationRepository.create(data);
+
+		this.notificationQueue.add(notificationJob.events.NEW_NOTIFICATION, notification);
+
+		return notification;
 	}
 }

@@ -22,6 +22,7 @@
   "dependencies": {
     "@apollo/server": "^4.11.0",
     "@nestjs/apollo": "^12.2.0",
+    "@nestjs/bull": "^10.2.3",
     "@nestjs/cache-manager": "^2.3.0",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.2.3",
@@ -45,6 +46,7 @@
     "@opentelemetry/sdk-trace-base": "^1.26.0",
     "@opentelemetry/semantic-conventions": "^1.27.0",
     "bcrypt": "^5.1.1",
+    "bull": "^4.16.4",
     "graphql": "^16.9.0",
     "graphql-scalars": "^1.24.0",
     "graphql-type-json": "^0.3.2",

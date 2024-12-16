@@ -56,17 +56,17 @@ export class ChatRoomResolver {
 	}
 
 	@Mutation(() => ChatRoomDto)
-	async addNewUser(@Args("userId") userId: string, @Args("roomId") roomId: string): Promise<ChatRoomDto> {
+	async addNewUserToChatRoom(@Args("userId") userId: string, @Args("roomId") roomId: string): Promise<ChatRoomDto> {
 		return await this.chatRoomService.addNewUser(userId, roomId);
 	}
 
 	@Mutation(() => ChatRoomDto)
-	async removeUser(@Args("userId") userId: string, @Args("roomId") roomId: string): Promise<ChatRoomDto> {
+	async removeUserFromChatRoom(@Args("userId") userId: string, @Args("roomId") roomId: string): Promise<ChatRoomDto> {
 		return await this.chatRoomService.removeUser(userId, roomId);
 	}
 
 	@Mutation(() => UserRoomDto)
-	async acceptToJoin(@Args("userId") userId: string, @Args("roomId") roomId: string): Promise<UserRoomDto> {
+	async acceptToJoinChatRoom(@Args("userId") userId: string, @Args("roomId") roomId: string): Promise<UserRoomDto> {
 		return await this.chatRoomService.acceptToJoin(userId, roomId);
 	}
 

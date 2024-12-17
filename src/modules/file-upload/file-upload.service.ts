@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { CreateFileUploadDto } from "./dto/create-file-upload.dto";
 import { FileUploadRepository } from "./file-upload.repository";
 import { Types } from "mongoose";
-import { FileUpload } from "./schemas/file-upload.schema";
+import { FileUpload } from "./file-upload.schema";
 
 @Injectable()
 export class FileUploadService {

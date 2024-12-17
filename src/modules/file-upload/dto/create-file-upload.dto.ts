@@ -1,5 +1,5 @@
 import { InputType, PickType } from "@nestjs/graphql";
-import { FileUpload } from "../schemas/file-upload.schema";
+import { FileUpload } from "../file-upload.schema";
 
 export class CreateFileUploadDto extends PickType(
 	FileUpload,

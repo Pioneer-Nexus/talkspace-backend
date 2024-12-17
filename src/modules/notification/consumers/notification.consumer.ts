@@ -1,11 +1,9 @@
 import { notificationJob } from "@/core/constants/jobs";
 import { ILoggerService } from "@/infrastructures/logger";
 import { ISseService } from "@/infrastructures/server-sent-event/sse.adapter";
-import { User } from "@/modules/user/schemas/user.schema";
 import { Process, Processor } from "@nestjs/bull";
 import { Job } from "bull";
-import { Types } from "mongoose";
-import { NotificationDto } from "../dtos/notification.dto";
+import { SingleNotificationDto } from "../dtos/single-notification.dto";
 import { NotificationRepository } from "../repositories/notification.repository";
 import { NotificationStatus } from "../schemas/notification.schema";
 
@@ -18,25 +16,24 @@ export class NotificationConsumer {
 	) {}
 
 	@Process(notificationJob.events.NEW_NOTIFICATION)
-	async newNotification(job: Job<NotificationDto>) {
+	async newNotification(job: Job<SingleNotificationDto>) {
 		const notification = job.data;
 		await this.notificationRepository.findOneAndUpdate(
 			{ _id: notification._id },
 			{ status: NotificationStatus.SENDING },
 		);
 
-		try {
-			await Promise.all(
-				notification.receiverUsers.map(async (userId: Types.ObjectId | User) => {
-					const isSent = this.sseService.sendMessageToUser(userId.toString(), notification);
-					await this.notificationRepository.findOneAndUpdate(
-						{ _id: notification._id },
-						{ status: isSent ? NotificationStatus.SENT : NotificationStatus.FAIL },
-					);
-				}),
-			);
-		} catch (error: unknown) {
-			this.logger.error("Fail to send notification", { error });
+		const isSent = this.sseService.sendMessageToUser(notification.userId, notification);
+
+		await this.notificationRepository.findOneAndUpdate(
+			{ _id: notification._id },
+			{ status: isSent ? NotificationStatus.SENT : NotificationStatus.FAIL },
+		);
+
+		if (isSent) {
+			job.moveToCompleted();
+		} else {
+			job.moveToFailed({ message: "User is disconnected" });
 		}
 
 		return {};

@@ -23,6 +23,11 @@ import { AppLoggerModule } from "@/infrastructures/logger";
 		UserModule,
 		BullModule.registerQueue({
 			name: notificationJob.name,
+			defaultJobOptions: {
+				attempts: 3,
+				backoff: 5000,
+				removeOnFail: false,
+			},
 		}),
 	],
 	controllers: [NotificationController],

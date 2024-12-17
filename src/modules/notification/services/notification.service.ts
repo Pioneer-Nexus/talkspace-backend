@@ -19,7 +19,15 @@ export class NotificationService {
 			status: NotificationStatus.WAITING,
 		});
 
-		this.notificationQueue.add(notificationJob.events.NEW_NOTIFICATION, notification);
+		const delay = notification.notifyDate ? notification.notifyDate.getTime() - new Date().getTime() : 0;
+
+		notification.receiverUsers.map((user: any) => {
+			this.notificationQueue.add(
+				notificationJob.events.NEW_NOTIFICATION,
+				{ ...notification, userId: user.toString() },
+				{ delay },
+			);
+		});
 
 		return notification;
 	}

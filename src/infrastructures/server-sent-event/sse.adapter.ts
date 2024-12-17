@@ -5,5 +5,5 @@ export abstract class ISseService {
 
 	abstract removeClient(userId: string): void;
 
-	abstract sendMessageToUser(userId: string, message: any): void;
+	abstract sendMessageToUser(userId: string, message: any): boolean;
 }

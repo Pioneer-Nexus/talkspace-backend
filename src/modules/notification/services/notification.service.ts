@@ -4,6 +4,7 @@ import { NotificationRepository } from "../repositories/notification.repository"
 import { InjectQueue } from "@nestjs/bull";
 import { notificationJob } from "@/core/constants/jobs";
 import { Queue } from "bull";
+import { NotificationStatus } from "../schemas/notification.schema";
 
 @Injectable()
 export class NotificationService {
@@ -13,7 +14,10 @@ export class NotificationService {
 	) {}
 
 	async create(data: CreateNotificationDto) {
-		const notification = await this.notificationRepository.create(data);
+		const notification = await this.notificationRepository.create({
+			...data,
+			status: NotificationStatus.WAITING,
+		});
 
 		this.notificationQueue.add(notificationJob.events.NEW_NOTIFICATION, notification);
 

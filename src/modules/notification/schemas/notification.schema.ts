@@ -17,6 +17,7 @@ export enum NotificationStatus {
 	WAITING = "WAITING",
 	SENDING = "SENDING",
 	SENT = "SENT",
+	FAIL = "FAIL",
 	RECEIVED = "RECEIVED",
 	READ = "READ",
 }
@@ -31,10 +32,6 @@ export class Notification extends BaseEntity {
 	@Prop()
 	@Field({ nullable: true })
 	content?: string;
-
-	@Prop({ default: false })
-	@Field(() => Boolean, { nullable: true, defaultValue: false })
-	isSent?: boolean;
 
 	@Prop({ type: () => Date })
 	@Field(() => GraphQLDateTimeISO, { nullable: true })

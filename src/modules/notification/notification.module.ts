@@ -12,11 +12,13 @@ import { NotificationService } from "./services/notification.service";
 import { NotificationConsumer } from "./consumers/notification.consumer";
 import { BullModule } from "@nestjs/bull";
 import { notificationJob } from "@/core/constants/jobs";
+import { AppLoggerModule } from "@/infrastructures/logger";
 
 @Module({
 	imports: [
 		AppDatabaseModule,
 		AppQueueModule,
+		AppLoggerModule,
 		SseModule,
 		UserModule,
 		BullModule.registerQueue({

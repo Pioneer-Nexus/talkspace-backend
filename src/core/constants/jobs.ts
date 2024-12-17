@@ -7,3 +7,10 @@ export const notificationJob = {
 		USER_NOT_CONNECTED: "USER_NOT_CONNECTED",
 	},
 };
+
+export const fileUploadJob = {
+	name: "file",
+	events: {
+		NEW_IMAGE: "NEW_IMAGE",
+	},
+};

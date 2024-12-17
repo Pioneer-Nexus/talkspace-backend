@@ -26,7 +26,7 @@ import { AppLoggerModule } from "@/infrastructures/logger";
 			defaultJobOptions: {
 				attempts: 3,
 				backoff: 5000,
-				removeOnFail: false,
+				removeOnFail: true,
 				removeOnComplete: true,
 			},
 		}),

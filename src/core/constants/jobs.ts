@@ -3,4 +3,7 @@ export const notificationJob = {
 	events: {
 		NEW_NOTIFICATION: "NEW_NOTIFICATION",
 	},
+	errors: {
+		USER_NOT_CONNECTED: "USER_NOT_CONNECTED",
+	},
 };

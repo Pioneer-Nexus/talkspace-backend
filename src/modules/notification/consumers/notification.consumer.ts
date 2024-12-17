@@ -31,11 +31,9 @@ export class NotificationConsumer {
 		);
 
 		if (isSent) {
-			job.moveToCompleted();
+			return { success: true };
 		} else {
-			job.moveToFailed({ message: "User is disconnected" });
+			throw new Error(notificationJob.errors.USER_NOT_CONNECTED);
 		}
-
-		return {};
 	}
 }

@@ -1,9 +1,10 @@
+import { notificationJob } from "@/core/constants/jobs";
+import { InjectQueue } from "@nestjs/bull";
 import { Injectable } from "@nestjs/common";
+import { Queue } from "bull";
+import { Types } from "mongoose";
 import { CreateNotificationDto } from "../dtos/create-notification.dto";
 import { NotificationRepository } from "../repositories/notification.repository";
-import { InjectQueue } from "@nestjs/bull";
-import { notificationJob } from "@/core/constants/jobs";
-import { Queue } from "bull";
 import { NotificationStatus } from "../schemas/notification.schema";
 
 @Injectable()
@@ -14,14 +15,17 @@ export class NotificationService {
 	) {}
 
 	async create(data: CreateNotificationDto) {
-		const notification = await this.notificationRepository.create({
-			...data,
-			status: NotificationStatus.WAITING,
-		});
+		const { receiverUsers, ...notification } = (
+			await this.notificationRepository.create({
+				...data,
+				status: NotificationStatus.WAITING,
+				receiverUsers: data.receiverUsers.map((d) => new Types.ObjectId(d)),
+			})
+		).toObject();
 
 		const delay = notification.notifyDate ? notification.notifyDate.getTime() - new Date().getTime() : 0;
 
-		notification.receiverUsers.map((user: any) => {
+		receiverUsers.map((user: any) => {
 			this.notificationQueue.add(
 				notificationJob.events.NEW_NOTIFICATION,
 				{ ...notification, userId: user.toString() },

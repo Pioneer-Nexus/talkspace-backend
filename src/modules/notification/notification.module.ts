@@ -27,6 +27,7 @@ import { AppLoggerModule } from "@/infrastructures/logger";
 				attempts: 3,
 				backoff: 5000,
 				removeOnFail: false,
+				removeOnComplete: true,
 			},
 		}),
 	],

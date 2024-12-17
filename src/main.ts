@@ -11,6 +11,8 @@ import { LoggingInterceptor } from "./infrastructures/logger/interceptor";
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
 
+	app.enableCors();
+
 	const correlation = await app.resolve(CorrelationService);
 	const logger = await app.resolve(ILoggerService);
 

@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@apollo/server": "^4.11.0",
+    "@as-integrations/fastify": "^2.1.1",
     "@nestjs/apollo": "^12.2.0",
     "@nestjs/bull": "^10.2.3",
     "@nestjs/cache-manager": "^2.3.0",
@@ -32,6 +33,7 @@
     "@nestjs/mongoose": "^10.0.10",
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/platform-fastify": "^10.4.15",
     "@nestjs/websockets": "^10.4.12",
     "@opentelemetry/auto-instrumentations-node": "^0.50.0",
     "@opentelemetry/exporter-metrics-otlp-http": "^0.53.0",

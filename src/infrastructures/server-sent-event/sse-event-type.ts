@@ -1,0 +1,4 @@
+export enum SseEvent {
+	NOTIFICATION = "NOTIFICATION",
+	MESSAGE = "MESSAGE",
+}

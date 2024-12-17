@@ -6,6 +6,7 @@ import { Job } from "bull";
 import { SingleNotificationDto } from "../dtos/single-notification.dto";
 import { NotificationRepository } from "../repositories/notification.repository";
 import { NotificationStatus } from "../schemas/notification.schema";
+import { SseEvent } from "@/infrastructures/server-sent-event/sse-event-type";
 
 @Processor(notificationJob.name)
 export class NotificationConsumer {
@@ -23,7 +24,7 @@ export class NotificationConsumer {
 			{ status: NotificationStatus.SENDING },
 		);
 
-		const isSent = this.sseService.sendMessageToUser(notification.userId, notification);
+		const isSent = this.sseService.sendMessageToUser(notification.userId, SseEvent.NOTIFICATION, notification);
 
 		await this.notificationRepository.findOneAndUpdate(
 			{ _id: notification._id },

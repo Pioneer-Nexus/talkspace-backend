@@ -11,7 +11,7 @@ export class NotificationController {
 
 	@Sse("watch")
 	@UseGuards(JwtSseAuthGuard)
-	notification(@Req() req: any, @Res() res: Response): Observable<MessageEvent> {
+	notification(@Req() req: any): Observable<MessageEvent> {
 		const user = req.user.user as UserDto;
 
 		const subject = new Subject<any>();
@@ -20,9 +20,8 @@ export class NotificationController {
 
 		this.sseService.addClient(userId, subject);
 
-		res.on("close", () => {
+		req.raw.on("close", () => {
 			this.sseService.removeClient(userId);
-			res.end();
 		});
 
 		return subject;

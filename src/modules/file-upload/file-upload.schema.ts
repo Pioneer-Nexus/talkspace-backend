@@ -27,6 +27,18 @@ export class FileUpload extends BaseEntity {
 
 	@Prop()
 	@Field()
+	pathSmall: string;
+
+	@Prop()
+	@Field()
+	pathMedium: string;
+
+	@Prop()
+	@Field()
+	pathLarge: string;
+
+	@Prop()
+	@Field()
 	filename: string;
 
 	@Prop()

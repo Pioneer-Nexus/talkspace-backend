@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, StreamableFile, UploadedFile, UseInterceptors } from "@nestjs/common";
+import { Controller, Get, Param, Post, Query, StreamableFile, UploadedFile, UseInterceptors } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { createReadStream } from "fs";
 import { join } from "path";
@@ -22,9 +22,18 @@ export class FileUploadController {
 	}
 
 	@Get(":id")
-	async getFile(@Param("id") id: string) {
+	async getFile(@Param("id") id: string, @Query("width") width: number, @Query("height") height: number) {
 		const fileData = await this.fileUploadService.findOne(id);
-		const filePath = join(process.cwd(), fileData.destination, fileData.filename);
+
+		let filePath = join(process.cwd(), fileData.destination, fileData.filename);
+		if (fileData.pathSmall && Math.max(width, height) <= 100) {
+			filePath = fileData.pathSmall;
+		} else if (fileData.pathMedium && Math.max(width, height) <= 800) {
+			filePath = fileData.pathMedium;
+		} else if (fileData.pathLarge) {
+			filePath = fileData.pathLarge;
+		}
+
 		const file = createReadStream(filePath);
 
 		return new StreamableFile(file, {

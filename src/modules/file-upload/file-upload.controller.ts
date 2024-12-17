@@ -26,6 +26,10 @@ export class FileUploadController {
 		const fileData = await this.fileUploadService.findOne(id);
 		const filePath = join(process.cwd(), fileData.destination, fileData.filename);
 		const file = createReadStream(filePath);
-		return new StreamableFile(file);
+
+		return new StreamableFile(file, {
+			type: fileData.mimetype,
+			disposition: fileData.originalname,
+		});
 	}
 }

@@ -14,11 +14,13 @@ import { TokenRepository } from "./repositories/token.repository";
 import { AuthDocument, AuthType } from "./schemas/auth.schema";
 import ERROR_CODES from "@/constants/error-code";
 import { SignInHistoryDto } from "./dtos/sign-in-history.dto";
+import { SignInHistoryRepository } from "./repositories/sign-in-history.repository";
 
 @Injectable()
 export class AuthService {
 	constructor(
 		private readonly authRepository: AuthRepository,
+		private readonly signInHistoryRepository: SignInHistoryRepository,
 		private readonly tokenRepository: TokenRepository,
 		private readonly userService: UserService,
 		private readonly logger: ILoggerService,
@@ -139,6 +141,6 @@ export class AuthService {
 	}
 
 	async saveSignInHistory(userId: string, ip: string, userAgent: string): Promise<void> {
-		await this.userService.addSignInHistory(userId, new SignInHistoryDto(ip, userAgent));
+		await this.signInHistoryRepository.create(new SignInHistoryDto(userId, ip, userAgent));
 	}
 }

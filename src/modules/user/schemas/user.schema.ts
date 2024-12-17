@@ -3,7 +3,6 @@ import { BaseEntity } from "@/core/entity/base-entity";
 import { Field, ObjectType, PickType } from "@nestjs/graphql";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument } from "mongoose";
-import { SignInHistory, SignInHistorySchema } from "./sign-in-history.schema";
 
 export type UserDocument = HydratedDocument<User> & BaseDocument;
 
@@ -17,9 +16,6 @@ export class User extends BaseEntity {
 	@Prop()
 	@Field()
 	email: string;
-
-	@Prop({ type: [SignInHistorySchema], default: [] })
-	signInHistory: SignInHistory[];
 }
 
 @ObjectType()

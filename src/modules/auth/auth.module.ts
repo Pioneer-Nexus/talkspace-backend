@@ -1,7 +1,7 @@
 import { AppConfigModule, IConfigAdapter } from "@/infrastructures/config";
 import { AppDatabaseModule } from "@/infrastructures/database";
 import { AppLoggerModule } from "@/infrastructures/logger";
-import { Auth, AuthSchema } from "@/modules/auth/schemas/auth.schema";
+import { Auth } from "@/modules/auth/schemas/auth.schema";
 import { generateMongoProvider } from "@/utils/mongo";
 import { Module } from "@nestjs/common";
 import { JwtModule } from "@nestjs/jwt";
@@ -10,8 +10,10 @@ import { UserModule } from "../user/user.module";
 import { AuthResolver } from "./auth.resolver";
 import { AuthService } from "./auth.service";
 import { AuthRepository } from "./repositories/auth.repository";
+import { SignInHistoryRepository } from "./repositories/sign-in-history.repository";
 import { TokenRepository } from "./repositories/token.repository";
-import { Token, TokenSchema } from "./schemas/token.schema";
+import { SignInHistory } from "./schemas/sign-in-history.schema";
+import { Token } from "./schemas/token.schema";
 import { JwtStrategy } from "./strategies/jwt.strategy";
 import { LocalStrategy } from "./strategies/local.strategy";
 
@@ -32,15 +34,17 @@ import { LocalStrategy } from "./strategies/local.strategy";
 		}),
 	],
 	providers: [
-		generateMongoProvider(Auth, AuthSchema),
-		generateMongoProvider(Token, TokenSchema),
+		generateMongoProvider(Auth),
+		generateMongoProvider(Token),
+		generateMongoProvider(SignInHistory),
 		AuthRepository,
 		TokenRepository,
 		LocalStrategy,
 		JwtStrategy,
 		AuthResolver,
 		AuthService,
+		SignInHistoryRepository,
 	],
-	exports: [AuthRepository,AuthService],
+	exports: [AuthRepository, AuthService],
 })
 export class AuthModule {}

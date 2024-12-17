@@ -1,9 +1,7 @@
 import { ApiConflictException } from "@/utils/exception";
 import { Injectable } from "@nestjs/common";
-import { Types } from "mongoose";
-import { SignInHistoryDto } from "../auth/dtos/sign-in-history.dto";
+import { UserRepository } from "./repositories/user.repository";
 import { UserDocument } from "./schemas/user.schema";
-import { UserRepository } from "./user.repository";
 
 @Injectable()
 export class UserService {
@@ -24,16 +22,5 @@ export class UserService {
 	async findById(id: string): Promise<UserDocument> {
 		const user = await this.userRepository.findById(id);
 		return user;
-	}
-
-	async addSignInHistory(userId: string, history: SignInHistoryDto) {
-		await this.userRepository.findOneAndUpdate(
-			{ _id: new Types.ObjectId(userId) },
-			{
-				$push: {
-					signInHistory: history,
-				},
-			},
-		);
 	}
 }

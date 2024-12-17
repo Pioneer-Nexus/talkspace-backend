@@ -21,6 +21,8 @@ export class GraphQLExceptionFilter implements GqlExceptionFilter {
 				statusCode: status ?? 500,
 				timestamp: new Date().toISOString(),
 				path: request.url,
+				message: exception.message,
+				...exception
 			});
 		}
 

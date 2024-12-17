@@ -1,7 +1,6 @@
 import "./infrastructures/tracing";
 
 import { NestFactory } from "@nestjs/core";
-import { FastifyAdapter } from "@nestjs/platform-fastify";
 import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 import { AppModule } from "./app.module";
 import { IConfigAdapter } from "./infrastructures/config";
@@ -10,8 +9,7 @@ import { ILoggerService } from "./infrastructures/logger";
 import { LoggingInterceptor } from "./infrastructures/logger/interceptor";
 
 async function bootstrap() {
-	const app = await NestFactory.create(AppModule, new FastifyAdapter());
-
+	const app = await NestFactory.create(AppModule);
 	app.enableCors();
 
 	const correlation = await app.resolve(CorrelationService);

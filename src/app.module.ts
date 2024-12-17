@@ -14,6 +14,7 @@ import { AppQueueModule } from "./infrastructures/queue";
 import { ChatRoomModule } from "./modules/chat-room/chat-room.module";
 import { NotificationModule } from "./modules/notification/notification.module";
 import { MessageModule } from './modules/message/message.module';
+import { FileUploadModule } from './modules/file-upload/file-upload.module';
 
 @Module({
 	imports: [
@@ -29,6 +30,7 @@ import { MessageModule } from './modules/message/message.module';
 		ChatRoomModule,
 		NotificationModule,
 		MessageModule,
+		FileUploadModule,
 	],
 	providers: [
 		AppResolver,

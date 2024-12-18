@@ -24,7 +24,7 @@ export class FileUploadController {
 	}
 
 	@Get(":id")
-	async getFile(@Param("id") id: string, @Query("width") width: number, @Query("height") height: number) {
+	async getFile(@Param("id") id: string, @Query("width") width: number = 480, @Query("height") height: number = 480) {
 		const fileData = await this.fileUploadService.findOne(id);
 
 		// Default filePath is the origin file path, then check its resolution and assign filePath by the new

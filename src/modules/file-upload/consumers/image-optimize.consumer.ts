@@ -7,6 +7,7 @@ import * as sharp from "sharp";
 import { FileUploadDto } from "../dto/file-upload.dto";
 import { FileUploadRepository } from "../file-upload.repository";
 import { Types } from "mongoose";
+import { imageOptimizationConfig } from "../config/image-optimization.config";
 
 @Processor(fileUploadJob.name)
 export class FileUploadConsumer {
@@ -18,47 +19,30 @@ export class FileUploadConsumer {
 
 		const uploadPath = join(__dirname, "../../../..", fileData.path);
 
-		await this.optimizeImageWithSize({
-			width: 100,
-			height: 100,
-			path: uploadPath,
-			name: "small",
-			field: "pathSmall",
-			fileData,
-		});
-
-		await this.optimizeImageWithSize({
-			width: 800,
-			height: 800,
-			path: uploadPath,
-			name: "medium",
-			field: "pathMedium",
-			fileData,
-		});
-
-		await this.optimizeImageWithSize({
-			path: uploadPath,
-			name: "large",
-			field: "pathLarge",
-			fileData,
-		});
+		await Promise.all(
+			imageOptimizationConfig.map(async ({ resolution, quality }) => {
+				await this.optimizeImageWithSize({
+					resolution,
+					quality,
+					path: uploadPath,
+					fileData,
+				});
+			}),
+		);
 	}
 
 	async optimizeImageWithSize({
-		width,
-		height,
+		resolution,
+		quality,
 		path: uploadPath,
-		name,
-		field,
 		fileData,
 	}: {
-		width?: number;
-		height?: number;
+		resolution: number;
+		quality: number;
 		path: string;
-		name: "small" | "medium" | "large";
-		field: "pathSmall" | "pathMedium" | "pathLarge";
 		fileData: FileUploadDto;
 	}) {
+		const name = `${resolution}`;
 		const folderPath = `tmp/upload/optimized-images/${name}`;
 		const outputDir = join(__dirname, `../../../../${folderPath}`);
 		const pathField = join(__dirname, `../../../../${folderPath}`, fileData.filename);
@@ -68,15 +52,11 @@ export class FileUploadConsumer {
 			mkdirSync(outputDir, { recursive: true });
 		}
 
-		if (!width || !height) {
-			await sharp(uploadPath).webp({ quality: 100 }).toFile(outputPath);
-		} else {
-			await sharp(uploadPath).resize(width, height, { fit: "inside" }).webp({ quality: 100 }).toFile(outputPath);
-		}
+		await sharp(uploadPath).resize(resolution, resolution, { fit: "inside" }).webp({ quality }).toFile(outputPath);
 
 		await this.fileUploadRepository.findOneAndUpdate(
 			{ _id: new Types.ObjectId(fileData._id) },
-			{ [field]: pathField, mimetype: "image/webp" },
+			{ [`optimizedPaths.${name}`]: pathField, mimetype: "image/webp" },
 		);
 	}
 }

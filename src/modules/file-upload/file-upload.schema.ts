@@ -25,17 +25,9 @@ export class FileUpload extends BaseEntity {
 	@Field()
 	destination: string;
 
-	@Prop()
-	@Field()
-	pathSmall: string;
-
-	@Prop()
-	@Field()
-	pathMedium: string;
-
-	@Prop()
-	@Field()
-	pathLarge: string;
+	@Prop({ type: Object })
+	@Field(() => JSON, { nullable: true })
+	optimizedPaths: any;
 
 	@Prop()
 	@Field()

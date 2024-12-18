@@ -3,6 +3,8 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { createReadStream } from "fs";
 import { join } from "path";
 import { FileUploadService } from "./file-upload.service";
+import { isImage } from "./utils/file-checking";
+import { getImageConfig, getImageFieldByResolution } from "./utils/image";
 
 @Controller("files")
 export class FileUploadController {
@@ -25,20 +27,23 @@ export class FileUploadController {
 	async getFile(@Param("id") id: string, @Query("width") width: number, @Query("height") height: number) {
 		const fileData = await this.fileUploadService.findOne(id);
 
+		// Default filePath is the origin file path, then check its resolution and assign filePath by the new
+		// optimized file path if it exists
 		let filePath = join(process.cwd(), fileData.destination, fileData.filename);
-		if (fileData.pathSmall && Math.max(width, height) <= 100) {
-			filePath = fileData.pathSmall;
-		} else if (fileData.pathMedium && Math.max(width, height) <= 800) {
-			filePath = fileData.pathMedium;
-		} else if (fileData.pathLarge) {
-			filePath = fileData.pathLarge;
+
+		if (isImage(fileData)) {
+			const imageConfig = getImageConfig(width, height);
+			const imageField = getImageFieldByResolution(imageConfig.resolution);
+			if (fileData.optimizedPaths[imageField]) {
+				filePath = fileData.optimizedPaths[imageField];
+			}
 		}
 
 		const file = createReadStream(filePath);
 
 		return new StreamableFile(file, {
 			type: fileData.mimetype,
-			disposition: fileData.originalname,
+			disposition: `inline`,
 		});
 	}
 }

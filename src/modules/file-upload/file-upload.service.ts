@@ -1,11 +1,12 @@
+import { fileUploadJob } from "@/core/constants/jobs";
+import { InjectQueue } from "@nestjs/bull";
 import { Injectable } from "@nestjs/common";
+import { Queue } from "bull";
+import { Types } from "mongoose";
 import { CreateFileUploadDto } from "./dto/create-file-upload.dto";
 import { FileUploadRepository } from "./file-upload.repository";
-import { Types } from "mongoose";
 import { FileUpload } from "./file-upload.schema";
-import { InjectQueue } from "@nestjs/bull";
-import { Queue } from "bull";
-import { fileUploadJob } from "@/core/constants/jobs";
+import { isImage } from "./utils/file-checking";
 
 @Injectable()
 export class FileUploadService {
@@ -17,7 +18,7 @@ export class FileUploadService {
 	async create(createFileUploadDto: CreateFileUploadDto): Promise<FileUpload> {
 		const fileData = await this.fileUploadRepository.create(createFileUploadDto);
 
-		if (fileData.mimetype.split("/").at(0) === "image") {
+		if (isImage(fileData)) {
 			this.fileUploadQueue.add(fileUploadJob.events.NEW_IMAGE, fileData);
 		}
 

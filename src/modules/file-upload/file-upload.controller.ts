@@ -30,6 +30,7 @@ export class FileUploadController {
 		await pump(data.file, createWriteStream(path));
 		const fileDto = {
 			...data,
+			originalname: data.originalname,
 			destination,
 			path,
 			filename,

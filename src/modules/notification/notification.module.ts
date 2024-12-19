@@ -39,5 +39,6 @@ import { AppLoggerModule } from "@/infrastructures/logger";
 		NotificationRepository,
 		NotificationConsumer,
 	],
+	exports: [NotificationService],
 })
 export class NotificationModule {}

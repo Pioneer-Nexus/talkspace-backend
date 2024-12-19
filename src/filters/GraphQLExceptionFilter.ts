@@ -17,7 +17,7 @@ export class GraphQLExceptionFilter implements GqlExceptionFilter {
 			const request = ctx.getRequest<Request>();
 			const status = exception.getStatus?.();
 
-			return response.status(status ?? 500).json({
+			return response.status(status ?? 500).send({
 				statusCode: status ?? 500,
 				timestamp: new Date().toISOString(),
 				path: request.url,

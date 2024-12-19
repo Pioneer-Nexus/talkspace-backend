@@ -1,25 +1,40 @@
-import { Controller, Get, Param, Post, Query, StreamableFile, UploadedFile, UseInterceptors } from "@nestjs/common";
-import { FileInterceptor } from "@nestjs/platform-express";
-import { createReadStream } from "fs";
+import { Controller, Get, Param, Post, Query, Req, StreamableFile } from "@nestjs/common";
+import { createReadStream, createWriteStream } from "fs";
 import { join } from "path";
 import { FileUploadService } from "./file-upload.service";
 import { isImage } from "./utils/file-checking";
 import { getImageConfig, getImageFieldByResolution } from "./utils/image";
+import { Types } from "mongoose";
+import { pipeline } from "stream";
+import * as util from "util";
+
+const pump = util.promisify(pipeline);
 
 @Controller("files")
 export class FileUploadController {
 	constructor(private readonly fileUploadService: FileUploadService) {}
 
 	@Post("upload")
-	@UseInterceptors(
-		FileInterceptor("file", {
-			limits: {
-				fileSize: 50 * 1024 * 1024,
-			},
-		}),
-	)
-	async uploadFile(@UploadedFile() file: Express.Multer.File) {
-		const fileData = await this.fileUploadService.create(file);
+	// @UseInterceptors(
+	// 	FileInterceptor("file", {
+	// 		limits: {
+	// 			fileSize: 50 * 1024 * 1024,
+	// 		},
+	// 	}),
+	// )
+	async uploadFile(@Req() req: any) {
+		const data = await req.file();
+		const filename = new Types.ObjectId().toHexString();
+		const destination = `tmp/upload/origin`;
+		const path = `${destination}/${filename}`;
+		await pump(data.file, createWriteStream(path));
+		const fileDto = {
+			...data,
+			destination,
+			path,
+			filename,
+		};
+		const fileData = await this.fileUploadService.create(fileDto);
 		return fileData;
 	}
 

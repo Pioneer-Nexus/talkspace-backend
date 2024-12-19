@@ -2,7 +2,7 @@ import { BaseDocument } from "@/core/entity/base-document";
 import { BaseEntity } from "@/core/entity/base-entity";
 import { Room } from "@/modules/chat-room/schemas/room.schema";
 import { User } from "@/modules/user/schemas/user.schema";
-import { ObjectType, Field, Int, registerEnumType } from "@nestjs/graphql";
+import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument, Types } from "mongoose";
 
@@ -49,22 +49,26 @@ export class Message extends BaseEntity {
 	files: (Types.ObjectId | File)[];
 
 	@Prop({ type: Types.ObjectId, ref: "Room" })
-	room_id: Types.ObjectId | Room;
+	@Field(() => String, { nullable: false })
+	roomId: Types.ObjectId | Room;
 
 	@Prop({ type: [Types.ObjectId], ref: "User" })
-	seen_users: (Types.ObjectId | User)[];
+	seenUsers: (Types.ObjectId | User)[];
 
 	@Prop({ type: Types.ObjectId, ref: "User" })
-	sent_user_id: Types.ObjectId | User;
+	authorId: Types.ObjectId | User;
 
-	@Prop({ type: [Types.ObjectId], ref: "User" })
-	tag_users: (Types.ObjectId | User)[];
+	@Prop({ type: [Types.ObjectId], ref: "User", default: [] })
+	@Field(() => [String], { nullable: true, defaultValue: [] })
+	tagUsers: (Types.ObjectId | User)[];
 
-	@Prop({ type: Boolean })
-	is_tag_all: Boolean;
+	@Prop({ type: Boolean, default: false })
+	@Field(() => Boolean, { nullable: true, defaultValue: false })
+	isTagAll: boolean;
 
 	@Prop({ type: Types.ObjectId, ref: "Message" })
-	quote_message_id?: Types.ObjectId | Message;
+	@Field(() => String, { nullable: true })
+	quoteMessageId?: Types.ObjectId | Message;
 }
 
 export type MessageDocument = HydratedDocument<Message> & BaseDocument;

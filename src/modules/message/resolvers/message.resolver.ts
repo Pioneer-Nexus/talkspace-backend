@@ -1,35 +1,18 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
-import { MessageService } from '../services/message.service';
-import { Message } from '../schemas/message.schema';
-import { CreateMessageInput } from '../dtos/create-message.input';
-import { UpdateMessageInput } from '../dtos/update-message.input';
+import { Args, Mutation, Resolver } from "@nestjs/graphql";
+import { CreateMessageInput } from "../dtos/create-message.input";
+import { MessageDto } from "../dtos/message.dto";
+import { MessageService } from "../services/message.service";
+import { UseGuards } from "@nestjs/common";
+import { CurrentUser, JwtAuthGuard } from "@/modules/auth";
+import { CurrentUserDto } from "@/modules/auth/dtos/current-auth.dto";
 
-@Resolver(() => Message)
+@Resolver(() => MessageDto)
+@UseGuards(JwtAuthGuard)
 export class MessageResolver {
-  constructor(private readonly messageService: MessageService) {}
+	constructor(private readonly messageService: MessageService) {}
 
-  @Mutation(() => Message)
-  createMessage(@Args('createMessageInput') createMessageInput: CreateMessageInput) {
-    return this.messageService.create(createMessageInput);
-  }
-
-  @Query(() => [Message], { name: 'message' })
-  findAll() {
-    return this.messageService.findAll();
-  }
-
-  @Query(() => Message, { name: 'message' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.messageService.findOne(id);
-  }
-
-  @Mutation(() => Message)
-  updateMessage(@Args('updateMessageInput') updateMessageInput: UpdateMessageInput) {
-    return this.messageService.update(updateMessageInput.id, updateMessageInput);
-  }
-
-  @Mutation(() => Message)
-  removeMessage(@Args('id', { type: () => Int }) id: number) {
-    return this.messageService.remove(id);
-  }
+	@Mutation(() => MessageDto)
+	createMessage(@CurrentUser() user: CurrentUserDto, @Args("input") createMessageInput: CreateMessageInput) {
+		return this.messageService.create(createMessageInput, user.id);
+	}
 }

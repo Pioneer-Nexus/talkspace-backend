@@ -1,26 +1,18 @@
-import { Injectable } from '@nestjs/common';
-import { CreateMessageInput } from '../dtos/create-message.input';
-import { UpdateMessageInput } from '../dtos/update-message.input';
+import { Injectable } from "@nestjs/common";
+import { CreateMessageInput } from "../dtos/create-message.input";
+import { MessageDto } from "../dtos/message.dto";
+import { MessageRepository } from "../repositories/message.repository";
 
 @Injectable()
 export class MessageService {
-  create(createMessageInput: CreateMessageInput) {
-    return 'This action adds a new message';
-  }
+	constructor(private readonly messageRepository: MessageRepository) {}
 
-  findAll() {
-    return `This action returns all message`;
-  }
+	async create(createMessageInput: CreateMessageInput, userId: string): Promise<MessageDto> {
+		const createdMessage = await this.messageRepository.createMessage({
+			...createMessageInput,
+			authorId: userId,
+		});
 
-  findOne(id: number) {
-    return `This action returns a #${id} message`;
-  }
-
-  update(id: number, updateMessageInput: UpdateMessageInput) {
-    return `This action updates a #${id} message`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} message`;
-  }
+		return createdMessage;
+	}
 }

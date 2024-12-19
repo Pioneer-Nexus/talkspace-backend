@@ -10,4 +10,12 @@ export class CurrentUserDto extends PickType(
 	User,
 	["_id", "createdAt", "updatedAt", "deletedAt", "email", "name"],
 	ObjectType,
-) {}
+) {
+	id: string;
+
+	constructor(user: Partial<User>) {
+		super();
+		Object.assign(this, user);
+		this.id = user._id.toString();
+	}
+}

@@ -6,17 +6,12 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { GraphQLDateTimeISO } from "graphql-scalars";
 import JSON from "graphql-type-json";
 import { HydratedDocument, Types } from "mongoose";
+import { NotificationType } from "./notification-type";
 
 export enum NotificationPriority {
 	HIGH = "HIGH",
 	NORMAL = "NORMAL",
 	LOW = "LOW",
-}
-
-export enum NotificationType {
-	NOTIFICATION = "NOTIFICATION",
-	NEW_MESSAGE = "NEW_MESSAGE",
-	NEW_MESSAGE_TAGGED = "NEW_MESSAGE_TAGGED",
 }
 
 export enum NotificationStatus {
@@ -67,8 +62,8 @@ registerEnumType(NotificationPriority, { name: "NotificationPriority" });
 
 registerEnumType(NotificationStatus, { name: "NotificationStatus" });
 
-registerEnumType(NotificationType, { name: "NotificationType" });
-
 export type NotificationDocument = HydratedDocument<Notification> & BaseDocument;
 
 export const NotificationSchema = SchemaFactory.createForClass(Notification);
+
+export * from "./notification-type";

@@ -1,0 +1,13 @@
+import { registerEnumType } from "@nestjs/graphql";
+
+export enum NotificationType {
+	NOTIFICATION = "NOTIFICATION",
+	NEW_MESSAGE = "NEW_MESSAGE",
+	NEW_MESSAGE_TAGGED = "NEW_MESSAGE_TAGGED",
+	NEW_REQUEST_TO_JOIN_ROOM = "NEW_REQUEST_TO_JOIN_ROOM",
+	NEW_INVIATION_TO_JOIN_ROOM = "NEW_INVIATION_TO_JOIN_ROOM",
+	BEING_ACCEPTED_TO_JOIN_ROOM = "BEING_ACCEPTED_TO_JOIN_ROOM",
+	ACCEPT_TO_JOIN_ROOM = "ACCEPT_TO_JOIN_ROOM",
+}
+
+registerEnumType(NotificationType, { name: "NotificationType" });

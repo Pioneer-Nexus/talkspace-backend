@@ -13,6 +13,12 @@ export enum NotificationPriority {
 	LOW = "LOW",
 }
 
+export enum NotificationType {
+	NOTIFICATION = "NOTIFICATION",
+	NEW_MESSAGE = "NEW_MESSAGE",
+	NEW_MESSAGE_TAGGED = "NEW_MESSAGE_TAGGED",
+}
+
 export enum NotificationStatus {
 	WAITING = "WAITING",
 	SENDING = "SENDING",
@@ -45,6 +51,10 @@ export class Notification extends BaseEntity {
 	@Field(() => NotificationStatus, { nullable: true, defaultValue: NotificationStatus.WAITING })
 	status?: string;
 
+	@Prop({ default: NotificationType.NOTIFICATION })
+	@Field(() => NotificationType, { nullable: true, defaultValue: NotificationType.NOTIFICATION })
+	type?: NotificationType;
+
 	@Prop({ default: NotificationPriority.NORMAL })
 	@Field(() => NotificationPriority, { nullable: true, defaultValue: NotificationPriority.NORMAL })
 	priority?: string;
@@ -53,13 +63,11 @@ export class Notification extends BaseEntity {
 	receiverUsers: Types.ObjectId[] | User[];
 }
 
-registerEnumType(NotificationPriority, {
-	name: "NotificationPriority",
-});
+registerEnumType(NotificationPriority, { name: "NotificationPriority" });
 
-registerEnumType(NotificationStatus, {
-	name: "NotificationStatus",
-});
+registerEnumType(NotificationStatus, { name: "NotificationStatus" });
+
+registerEnumType(NotificationType, { name: "NotificationType" });
 
 export type NotificationDocument = HydratedDocument<Notification> & BaseDocument;
 

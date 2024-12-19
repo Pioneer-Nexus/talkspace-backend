@@ -16,6 +16,7 @@ export class MessageDto extends PickType(
 		"seenUsers",
 		"authorId",
 		"status",
+		"tagUsers",
 	],
 	ObjectType,
 ) {}

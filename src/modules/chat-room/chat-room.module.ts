@@ -24,5 +24,6 @@ import { UserRoomService } from "./services/user-room.service";
 		ChatRoomRepository,
 		UserRoomRepository,
 	],
+	exports: [ChatRoomService],
 })
 export class ChatRoomModule {}

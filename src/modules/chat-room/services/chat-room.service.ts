@@ -67,6 +67,11 @@ export class ChatRoomService {
 		return await this.chatRoomRepository.findById(id);
 	}
 
+	async findAllMembers(roomId: string, paginationOption: PaginationOption): Promise<string[]> {
+		const userRooms = await this.userRoomRepository.findAll({ room: new Types.ObjectId(roomId) }, paginationOption);
+		return userRooms.data.map((userRoom) => userRoom.user.toString());
+	}
+
 	async remove(id: string): Promise<string> {
 		await this.chatRoomRepository.remove({ _id: id });
 		return id;

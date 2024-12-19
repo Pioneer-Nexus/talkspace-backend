@@ -14,3 +14,10 @@ export const fileUploadJob = {
 		NEW_IMAGE: "NEW_IMAGE",
 	},
 };
+
+export const messageJob = {
+	name: "message",
+	events: {
+		NEW_MESSAGE: "NEW_MESSAGE",
+	},
+};

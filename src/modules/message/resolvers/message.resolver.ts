@@ -23,9 +23,10 @@ export class MessageResolver {
 		description: "Get paginated messages of a room by id of the room",
 	})
 	getRoomMessages(
+		@CurrentUser() user: CurrentUserDto,
 		@Args("roomIdInput") roomId: string,
 		@Args("paginationOptionInput") paginatedOption: PaginationOptionDto,
 	): Promise<PaginatedMessageDto> {
-		return this.messageService.getRoomMessages(roomId, paginatedOption);
+		return this.messageService.getRoomMessages(roomId, user.id, paginatedOption);
 	}
 }

@@ -76,4 +76,13 @@ export class ChatRoomService {
 		await this.chatRoomRepository.remove({ _id: id });
 		return id;
 	}
+
+	async isUserInRoom(userId: string, roomId: string): Promise<boolean> {
+		const userRoom = await this.userRoomRepository.findOne({
+			user: new Types.ObjectId(userId),
+			room: new Types.ObjectId(roomId),
+		});
+
+		return !!userRoom;
+	}
 }

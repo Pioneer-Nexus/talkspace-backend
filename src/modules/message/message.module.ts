@@ -15,6 +15,7 @@ import { MessageNotifyConsumer } from "./consumers/message-notify.consumer";
 	imports: [
 		AppDatabaseModule,
 		NotificationModule,
+		ChatRoomModule,
 		forwardRef(() => ChatRoomModule),
 		BullModule.registerQueue({
 			name: messageJob.name,

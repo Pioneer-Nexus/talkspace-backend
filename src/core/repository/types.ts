@@ -65,3 +65,13 @@ export class PaginatedDto<T> {
 
 	data: T[];
 }
+
+export function GeneratePaginatedDto<T>(dto: new () => T) {
+	@ObjectType()
+	class GenereratedPaginatedDto extends PaginatedDto<T> {
+		@Field(() => [dto])
+		data: T[];
+	}
+
+	return GenereratedPaginatedDto;
+}

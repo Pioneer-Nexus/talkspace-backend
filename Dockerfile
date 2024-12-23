@@ -1,16 +1,20 @@
-# Base image
-FROM node:20
+FROM node:22 AS build
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
 COPY package*.json ./
 
+RUN npm i --omit=dev
+RUN npm install --os=linux --libc=musl --cpu=x64 sharp
+
 COPY . .
 
-COPY start.sh .
+RUN npm run build
 
-RUN chmod +x start.sh
+FROM node:22-alpine
+
+COPY --from=build /app /
 
 EXPOSE 9000
 
-CMD ["./start.sh"]
+CMD ["node", "dist/main.js"]

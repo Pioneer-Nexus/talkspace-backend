@@ -25,6 +25,6 @@ async function bootstrap() {
 
 	const config = app.get(IConfigAdapter);
 
-	await app.listen(config.PORT);
+	await app.listen(config.PORT, '0.0.0.0');
 }
 bootstrap();

@@ -56,6 +56,7 @@ export class Message extends BaseEntity {
 	seenUsers: (Types.ObjectId | User)[];
 
 	@Prop({ type: Types.ObjectId, ref: "User" })
+	@Field(() => String, { nullable: false })
 	authorId: Types.ObjectId | User;
 
 	@Prop({ type: [Types.ObjectId], ref: "User", default: [] })
